@@ -9,6 +9,7 @@ import {
 import { ProviderRepository } from '../repositories';
 import { CreateProviderDTO, UpdateProviderDTO } from '../dtos';
 import AppError from '../../../shared/errors/AppError';
+import { SharedRepository } from '@/modules/shared/repositories/SharedRepository';
 
 export class ProviderController {
   private createProviderUseCase: CreateProviderUseCase;
@@ -19,7 +20,9 @@ export class ProviderController {
 
   constructor() {
     const providerRepository = new ProviderRepository();
-    this.createProviderUseCase = new CreateProviderUseCase(providerRepository);
+    const sharedRepository = new SharedRepository();
+
+    this.createProviderUseCase = new CreateProviderUseCase(providerRepository, sharedRepository);
     this.getProviderByIdUseCase = new GetProviderByIdUseCase(providerRepository);
     this.listProvidersUseCase = new ListProvidersUseCase(providerRepository);
     this.updateProviderUseCase = new UpdateProviderUseCase(providerRepository);

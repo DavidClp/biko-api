@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { ProviderController } from '../controllers';
+import { userAuthenticatedMiddleware } from '@/shared/infra/http/express/middlewares/user-authenticated/UserAuthenticatedMiddleware';
 
 const providerRoutes = Router();
 const providerController = new ProviderController();
@@ -14,9 +15,9 @@ providerRoutes.get('/:id', providerController.getById.bind(providerController));
 providerRoutes.get('/', providerController.list.bind(providerController));
 
 // Rota para atualizar um provider
-providerRoutes.put('/:id', providerController.update.bind(providerController));
+providerRoutes.put('/:id', userAuthenticatedMiddleware, providerController.update.bind(providerController));
 
 // Rota para deletar um provider
-providerRoutes.delete('/:id', providerController.delete.bind(providerController));
+providerRoutes.delete('/:id', userAuthenticatedMiddleware, providerController.delete.bind(providerController));
 
 export { providerRoutes };

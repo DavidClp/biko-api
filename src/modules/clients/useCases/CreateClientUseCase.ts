@@ -24,8 +24,6 @@ export class CreateClientUseCase {
       role: Role.CLIENT,
     })
 
-    console.log(user);
-
     const client = await this.clientRepository.create({
       ...data,
       userId: user.id,

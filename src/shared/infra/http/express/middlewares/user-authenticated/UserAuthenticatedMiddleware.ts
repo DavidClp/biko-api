@@ -77,7 +77,6 @@ export const userAuthenticatedMiddleware = () => {
         });
       }
       
-      // Se for outro tipo de erro, retornar erro interno
       return res.status(500).json({
         success: false,
         error: {

@@ -66,7 +66,6 @@ export class AuthenticateUserUseCase {
       throw new Error('Email ou senha incorretos');
     }
 
-    // Gerar token JWT
     const token = sign(
       {
         sub: user.id,

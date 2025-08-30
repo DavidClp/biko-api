@@ -8,8 +8,8 @@ export interface IProviderResponseDTO {
   description?: string;
   photoUrl?: string;
   city?: string;
-  phone: string;
-  socialLinks?: string;
+  phone?: string;
+  socialLinks?: Record<string, any>;
   status: ProviderStatus;
   createdAt: Date;
   updatedAt: Date;

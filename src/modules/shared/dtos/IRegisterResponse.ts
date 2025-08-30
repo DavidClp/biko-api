@@ -3,13 +3,15 @@ import { IProviderResponseDTO } from "@/modules/providers/dtos/IProviderResponse
 import { Role } from "@prisma/client"
 
 export interface IRegisterResponse {
-    id: string;
-    email: string;
-    password: string;
-    role: Role;
-    createdAt?: Date;
-    updatedAt?: Date;
-    client?: IClientResponseDTO | null;
-    provider?: IProviderResponseDTO | null;
+    user: {
+        id: string;
+        email: string;
+        password: string;
+        role: Role;
+        createdAt?: Date;
+        updatedAt?: Date;
+        client?: IClientResponseDTO | null;
+        provider?: IProviderResponseDTO | null;
+    }
     token: string;
 }
