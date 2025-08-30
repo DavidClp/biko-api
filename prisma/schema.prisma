@@ -1,0 +1,83 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["views"]
+  binaryTargets   = ["native", "rhel-openssl-1.0.x"]
+  engineType      = "binary"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  password  String
+  role      Role
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+  client    Client?
+  provider  Provider?
+}
+
+model Client {
+  id        String    @id @default(uuid())
+  userId    String    @unique
+  name      String
+  city      String?
+  phone     String?
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+  updatedAt DateTime  @updatedAt
+  user      User      @relation(fields: [userId], references: [id])
+  requests  Request[]
+}
+
+model Provider {
+  id          String         @id @default(uuid())
+  userId      String         @unique
+  name        String
+  service     String
+  description String?
+  city        String
+  phone       String?
+  socialLinks Json?
+  photoUrl    String?
+  status      ProviderStatus @default(PENDING)
+  createdAt   DateTime       @default(now())
+  deletedAt   DateTime?
+  updatedAt   DateTime       @updatedAt
+  user        User           @relation(fields: [userId], references: [id])
+  requests    Request[]
+}
+
+model Request {
+  id         String        @id @default(uuid())
+  clientId   String
+  providerId String
+  status     RequestStatus @default(PENDING)
+  createdAt  DateTime      @default(now())
+  client     Client        @relation(fields: [clientId], references: [id])
+  provider   Provider      @relation(fields: [providerId], references: [id])
+}
+
+enum Role {
+  CLIENT
+  PROVIDER
+  ADMIN
+}
+
+enum ProviderStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COMPLETED
+}
