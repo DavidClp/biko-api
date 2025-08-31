@@ -27,10 +27,10 @@ model Client {
   userId    String    @unique
   name      String
   city      String?
-  phone     String?
   createdAt DateTime  @default(now())
   deletedAt DateTime?
   updatedAt DateTime  @updatedAt
+  phone     String?
   user      User      @relation(fields: [userId], references: [id])
   requests  Request[]
 }
@@ -41,7 +41,7 @@ model Provider {
   name        String
   service     String
   description String?
-  city        String
+  cityId      String?
   phone       String?
   socialLinks Json?
   photoUrl    String?
@@ -51,6 +51,7 @@ model Provider {
   updatedAt   DateTime       @updatedAt
   user        User           @relation(fields: [userId], references: [id])
   requests    Request[]
+  city        cities?         @relation(fields: [cityId], references: [id])
 }
 
 model Request {
@@ -61,6 +62,27 @@ model Request {
   createdAt  DateTime      @default(now())
   client     Client        @relation(fields: [clientId], references: [id])
   provider   Provider      @relation(fields: [providerId], references: [id])
+}
+
+model cities {
+  id              String     @id
+  name            String?
+  state_id        String
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime
+  name_no_accents String?
+  state           state      @relation(fields: [state_id], references: [id])
+  Provider        Provider[]
+}
+
+model state {
+  id              String   @id
+  name            String?
+  initials        String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime
+  name_no_accents String?
+  cities          cities[]
 }
 
 enum Role {

@@ -1,6 +1,7 @@
 import { providerRoutes } from '@/modules/providers/routes/provider.routes';
 import { clientRoutes } from '@/modules/clients/routes/client.routes';
 import { authRoutes } from '@/modules/auth/login/routes/auth.routes';
+import { cityRoutes } from '@/modules/cities/routes/city.routes';
 import { Request, Response, Router } from 'express';
 
 const routes = Router();
@@ -13,6 +14,9 @@ routes.use('/providers', providerRoutes);
 
 // Rotas de clients
 routes.use('/clients', clientRoutes);
+
+// Rotas de cidades
+routes.use('/cities', cityRoutes);
 
 //routes.use(sharedRoutes);
 //routes.use('/properties', propertiesRoutes);

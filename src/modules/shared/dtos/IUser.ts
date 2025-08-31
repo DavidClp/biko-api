@@ -21,3 +21,7 @@ export interface ICreateUser {
   password: string;
   role: Role;
 }
+
+export interface IUpdateUser {
+  password?: string;
+}

@@ -51,6 +51,9 @@ export class ProviderRepository implements IProviderRepository {
     try {
       const provider = await database.provider.findUnique({
         where: { userId },
+        include: {
+          user: true,
+        },
       });
 
       return provider as ProviderResponseDTO | null;
@@ -83,11 +86,13 @@ export class ProviderRepository implements IProviderRepository {
 
   async update(id: string, data: UpdateProviderDTO): Promise<ProviderResponseDTO> {
     try {
+      console.log("Atualizando provider", data);
       const provider = await database.provider.update({
         where: { id },
         data,
       });
 
+      console.log(provider);
       return provider as ProviderResponseDTO;
     } catch (error) {
       throw new AppError({

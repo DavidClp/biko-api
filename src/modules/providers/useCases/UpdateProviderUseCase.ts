@@ -15,7 +15,6 @@ export class UpdateProviderUseCase {
       });
     }
 
-    // Verificar se o provider existe
     const existingProvider = await this.providerRepository.findById(id);
     if (!existingProvider) {
       throw new AppError({
@@ -26,7 +25,6 @@ export class UpdateProviderUseCase {
       });
     }
 
-    // Atualizar o provider
     const updatedProvider = await this.providerRepository.update(id, data);
     return updatedProvider;
   }
