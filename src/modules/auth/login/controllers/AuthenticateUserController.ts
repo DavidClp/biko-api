@@ -19,7 +19,11 @@ export class AuthenticateUserController {
         password
       });
 
-      return response.status(200).json(result);
+      return response.status(200).json({
+        success: true,
+        data: result,
+        message: 'Usuário autenticado com sucesso',
+      });
     } catch (error) {
       if (error instanceof Error) {
         return response.status(401).json({

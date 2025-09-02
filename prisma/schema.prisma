@@ -58,6 +58,10 @@ model Request {
   id         String        @id @default(uuid())
   clientId   String
   providerId String
+  service_type String
+  description String?
+  address String?
+  urgency String?
   status     RequestStatus @default(PENDING)
   createdAt  DateTime      @default(now())
   client     Client        @relation(fields: [clientId], references: [id])

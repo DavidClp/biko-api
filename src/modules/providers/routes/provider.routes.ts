@@ -9,7 +9,7 @@ const providerController = new ProviderController();
 providerRoutes.post('/', providerController.create.bind(providerController));
 
 // Rota para buscar um provider por userId
-providerRoutes.get('/:userId', providerController.getById.bind(providerController));
+providerRoutes.get('/:providerId', providerController.getById.bind(providerController));
 
 // Rota para listar todos os providers
 providerRoutes.get('/', providerController.list.bind(providerController));

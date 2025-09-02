@@ -60,8 +60,8 @@ export class ProviderController {
 
   async getById(req: Request, res: Response): Promise<Response> {
     try {
-      const { userId } = req.params;
-      const provider = await this.getProviderByIdUseCase.execute(userId);
+      const { providerId } = req.params;
+      const provider = await this.getProviderByIdUseCase.execute(providerId);
 
       return res.status(200).json({
         success: true,

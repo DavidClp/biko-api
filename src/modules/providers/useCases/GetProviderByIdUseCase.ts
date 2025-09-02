@@ -5,8 +5,8 @@ import AppError from '../../../shared/errors/AppError';
 export class GetProviderByIdUseCase {
   constructor(private providerRepository: IProviderRepository) {}
 
-  async execute(userId: string): Promise<ProviderResponseDTO> {
-    if (!userId) {
+  async execute(providerId: string): Promise<ProviderResponseDTO> {
+    if (!providerId) {
       throw new AppError({
         title: 'ID inválido',
         detail: 'ID do provider é obrigatório',
@@ -15,7 +15,7 @@ export class GetProviderByIdUseCase {
       });
     }
 
-    const provider = await this.providerRepository.findByUserId(userId);
+    const provider = await this.providerRepository.findById(providerId);
     
     if (!provider) {
       throw new AppError({
