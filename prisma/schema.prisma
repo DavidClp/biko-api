@@ -62,10 +62,23 @@ model Request {
   description String?
   address String?
   urgency String?
+  value    Decimal?       @db.Decimal(10,2) @default(0)
   status     RequestStatus @default(PENDING)
   createdAt  DateTime      @default(now())
   client     Client        @relation(fields: [clientId], references: [id])
   provider   Provider      @relation(fields: [providerId], references: [id])
+  messages   Message[]
+}
+
+model Message {
+  id        String    @id @default(uuid())
+  requestId String
+  content   String
+  type      MessageType @default(TEXT)
+  viewed    Boolean     @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  request   Request    @relation(fields: [requestId], references: [id])
 }
 
 model cities {
@@ -106,4 +119,10 @@ enum RequestStatus {
   ACCEPTED
   REJECTED
   COMPLETED
+}
+
+enum MessageType {
+  TEXT
+  IMAGE
+  VIDEO
 }
