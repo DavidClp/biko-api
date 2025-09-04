@@ -8,8 +8,10 @@ export class MessageRepository implements IMessageRepository {
     try {
       const message = await database.message.create({
         data: {
-          requestId: data.requestId,
+          request_id: data.request_id,
           content: data.content,
+          sender_id: data.sender_id,
+          receiver_id: data.receiver_id,
           type: data.type || 'TEXT',
         },
       });
@@ -45,7 +47,7 @@ export class MessageRepository implements IMessageRepository {
   async findByRequestId(requestId: string): Promise<MessageResponseDTO[]> {
     try {
       const messages = await database.message.findMany({
-        where: { requestId },
+        where: { request_id: requestId },
         orderBy: { createdAt: 'asc' },
       });
 
@@ -55,6 +57,42 @@ export class MessageRepository implements IMessageRepository {
         title: 'Erro ao buscar mensagens',
         detail: 'Não foi possível buscar as mensagens no banco de dados',
         origin: 'MessageRepository.findByRequestId',
+        statusCode: 500,
+      });
+    }
+  }
+
+  async findBySenderId(senderId: string): Promise<MessageResponseDTO[]> {
+    try {
+      const messages = await database.message.findMany({
+        where: { sender_id: senderId },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      return messages as MessageResponseDTO[];
+    } catch (error) {
+      throw new AppError({
+        title: 'Erro ao buscar mensagens',
+        detail: 'Não foi possível buscar as mensagens no banco de dados',
+        origin: 'MessageRepository.findBySenderId',
+        statusCode: 500,
+      });
+    }
+  }
+
+  async findByReceiverId(receiverId: string): Promise<MessageResponseDTO[]> {
+    try {
+      const messages = await database.message.findMany({
+        where: { receiver_id: receiverId },
+        orderBy: { createdAt: 'desc' },
+      });
+
+      return messages as MessageResponseDTO[];
+    } catch (error) {
+      throw new AppError({
+        title: 'Erro ao buscar mensagens',
+        detail: 'Não foi possível buscar as mensagens no banco de dados',
+        origin: 'MessageRepository.findByReceiverId',
         statusCode: 500,
       });
     }

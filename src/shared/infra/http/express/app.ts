@@ -3,6 +3,11 @@ import AppError from '../../../errors/AppError';
 import express, { NextFunction, Request, Response } from 'express';
 import { routes } from './routes/index.routes';
 import cors from "cors";
+import { Server } from 'socket.io'
+import { database } from "../../database";
+import { setupWebSocket } from "./websocket";
+
+
 export const notifications_in_progress: { [key: string]: boolean } = {};
 
 const app = express();
@@ -34,7 +39,7 @@ app.use((err: unknown, req: Request, res: Response, _: NextFunction) => {
     // Se for um erro de validação do Prisma
     if (err && typeof err === 'object' && 'code' in err) {
         const prismaError = err as any;
-        
+
         if (prismaError.code === 'P2002') {
             return res.status(409).json({
                 success: false,
@@ -45,7 +50,7 @@ app.use((err: unknown, req: Request, res: Response, _: NextFunction) => {
                 },
             });
         }
-        
+
         if (prismaError.code === 'P2025') {
             return res.status(404).json({
                 success: false,
@@ -70,5 +75,9 @@ app.use((err: unknown, req: Request, res: Response, _: NextFunction) => {
 });
 
 const serverHttp = http.createServer(app);
+const io = new Server(serverHttp, { cors: { origin: '*' } });
+
+// Configurar WebSocket
+setupWebSocket(io);
 
 export { app, serverHttp };

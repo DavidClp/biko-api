@@ -1,5 +1,9 @@
+import { MessageType } from '@prisma/client';
+
 export interface CreateMessageDTO {
-  requestId: string;
+  request_id: string;
   content: string;
-  type?: 'TEXT' | 'IMAGE' | 'VIDEO';
+  sender_id: string;
+  receiver_id: string;
+  type?: MessageType;
 }

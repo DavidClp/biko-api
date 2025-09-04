@@ -14,10 +14,10 @@ export class CreateMessageUseCase {
   }
 
   private async validateData(data: CreateMessageDTO): Promise<void> {
-    if (!data.requestId || !data.content) {
+    if (!data.request_id || !data.content || !data.sender_id || !data.receiver_id) {
       throw new AppError({
         title: 'Dados inválidos',
-        detail: 'RequestId e conteúdo são obrigatórios',
+        detail: 'RequestId, conteúdo, senderId e receiverId são obrigatórios',
         origin: 'CreateMessageUseCase.execute',
         statusCode: 400,
       });
@@ -32,10 +32,10 @@ export class CreateMessageUseCase {
       });
     }
 
-    if (data.type && !['TEXT', 'IMAGE', 'VIDEO'].includes(data.type)) {
+    if (data.sender_id === data.receiver_id) {
       throw new AppError({
-        title: 'Tipo inválido',
-        detail: 'O tipo da mensagem deve ser TEXT, IMAGE ou VIDEO',
+        title: 'Dados inválidos',
+        detail: 'O remetente não pode ser o mesmo que o destinatário',
         origin: 'CreateMessageUseCase.execute',
         statusCode: 400,
       });
