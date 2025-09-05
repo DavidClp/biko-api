@@ -4,6 +4,7 @@ import { authRoutes } from '@/modules/auth/login/routes/auth.routes';
 import { cityRoutes } from '@/modules/cities/routes/city.routes';
 import { requestRoutes } from '@/modules/request/routes/request.routes';
 import { messageRoutes } from '@/modules/messages/routes/message.routes';
+import { serviceRoutes } from '@/modules/shared/routes/service.routes';
 import { Request, Response, Router } from 'express';
 
 const routes = Router();
@@ -25,6 +26,9 @@ routes.use('/requests', requestRoutes);
 
 // Rotas de mensagens
 routes.use('/messages', messageRoutes);
+
+// Rotas de serviços
+routes.use('/services', serviceRoutes);
 
 //routes.use(sharedRoutes);
 //routes.use('/properties', propertiesRoutes);

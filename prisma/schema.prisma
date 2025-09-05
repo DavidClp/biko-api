@@ -11,15 +11,17 @@ datasource db {
 }
 
 model User {
-  id               String    @id @default(uuid())
-  email            String    @unique
-  password         String
-  role             Role
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  deletedAt        DateTime?
-  client           Client?
-  provider         Provider?
+  id        String    @id @default(uuid())
+  email     String    @unique
+  password  String
+  role      Role
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  client   Client?
+  provider Provider?
+
   sentMessages     Message[] @relation("SentMessages")
   receivedMessages Message[] @relation("ReceivedMessages")
 }
@@ -33,8 +35,9 @@ model Client {
   deletedAt DateTime?
   updatedAt DateTime  @updatedAt
   phone     String?
-  user      User      @relation(fields: [userId], references: [id])
-  requests  Request[]
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  requests Request[]
 }
 
 model Provider {
@@ -51,9 +54,29 @@ model Provider {
   createdAt   DateTime       @default(now())
   deletedAt   DateTime?
   updatedAt   DateTime       @updatedAt
-  user        User           @relation(fields: [userId], references: [id])
-  requests    Request[]
-  city        cities?        @relation(fields: [cityId], references: [id])
+
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  requests         Request[]
+  city             cities?            @relation(fields: [cityId], references: [id])
+  service_provider service_provider[]
+}
+
+model service_provider {
+  id          String   @id @default(uuid())
+  service_id  String
+  provider_id String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  service     service  @relation(fields: [service_id], references: [id])
+  provider    Provider @relation(fields: [provider_id], references: [id], onDelete: Cascade)
+}
+
+model service {
+  id               String             @id @default(uuid())
+  name             String
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  service_provider service_provider[]
 }
 
 model Request {
@@ -83,9 +106,9 @@ model Message {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
-  sender   User    @relation("SentMessages", fields: [sender_id], references: [id])
-  receiver User    @relation("ReceivedMessages", fields: [receiver_id], references: [id])
-  request  Request @relation(fields: [request_id], references: [id])
+  sender   User    @relation("SentMessages", fields: [sender_id], references: [id], onDelete: Cascade)
+  receiver User    @relation("ReceivedMessages", fields: [receiver_id], references: [id], onDelete: Cascade)
+  request  Request @relation(fields: [request_id], references: [id], onDelete: Cascade)
 }
 
 model cities {

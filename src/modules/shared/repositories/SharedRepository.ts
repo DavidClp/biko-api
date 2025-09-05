@@ -1,5 +1,6 @@
 import { database } from '../../../shared/infra/database';
 import { ICreateUser, IUser } from '../dtos/IUser';
+import { IServiceResponseDTO } from '../dtos/IServiceResponseDTO';
 import { ISharedRepository } from './ISharedRepository';
 import AppError from '../../../shared/errors/AppError';
 
@@ -117,6 +118,33 @@ export class SharedRepository implements ISharedRepository {
         title: 'Erro ao buscar usuário',
         detail: 'Ocorreu um erro inesperado ao buscar o usuário',
         origin: 'SharedRepository.findUserByEmail',
+        statusCode: 500,
+      });
+    }
+  }
+
+  async listServices({ name }: { name?: string }): Promise<IServiceResponseDTO[]> {
+    try {
+      const services = await database.service.findMany({
+        where: name ? {
+          name: {
+            contains: name,
+            mode: 'insensitive'
+          }
+        } : {},
+        orderBy: {
+          name: 'asc'
+        }
+      });
+
+      return services as IServiceResponseDTO[];
+    } catch (error) {
+      console.error('❌ - Erro ao buscar serviços:', error);
+      
+      throw new AppError({
+        title: 'Erro ao buscar serviços',
+        detail: 'Ocorreu um erro inesperado ao buscar os serviços',
+        origin: 'SharedRepository.listServices',
         statusCode: 500,
       });
     }
