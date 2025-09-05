@@ -5,7 +5,7 @@ export interface ProviderResponseDTO {
   service: string;
   description?: string;
   cityId?: string;
-  city?: string;
+  cityName?: string;
   phone?: string;
   socialLinks?: Record<string, any>;
   photoUrl?: string;

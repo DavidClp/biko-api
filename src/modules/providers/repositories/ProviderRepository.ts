@@ -1,5 +1,5 @@
 import { database } from '../../../shared/infra/database';
-import { IProviderRepository } from './IProviderRepository';
+import { IGetListProvidersDTO, IProviderRepository } from './IProviderRepository';
 import { CreateProviderDTO, UpdateProviderDTO, ProviderResponseDTO } from '../dtos';
 import AppError from '../../../shared/errors/AppError';
 
@@ -12,7 +12,7 @@ export class ProviderRepository implements IProviderRepository {
           name: data.name,
           service: data.service,
           description: data.description,
-          city: data.city,
+          cityId: data.city,
           phone: data.phone,
           socialLinks: data.socialLinks,
           photoUrl: data.photoUrl,
@@ -67,13 +67,28 @@ export class ProviderRepository implements IProviderRepository {
     }
   }
 
-  async findAll(): Promise<ProviderResponseDTO[]> {
+  async findAll({ cityId, query, service }: IGetListProvidersDTO): Promise<ProviderResponseDTO[]> {
     try {
       const providers = await database.provider.findMany({
         orderBy: { createdAt: 'desc' },
+        include: {
+          city: {
+            select: {
+              name: true,
+            },
+          },
+        },
+        where: {
+          cityId,
+          service,
+          name: { contains: query, mode: 'insensitive' },
+        },
       });
 
-      return providers as ProviderResponseDTO[];
+      return providers.map((provider) => ({
+        ...provider,
+        cityName: provider.city?.name,
+      })) as ProviderResponseDTO[];
     } catch (error) {
       throw new AppError({
         title: 'Erro ao listar providers',

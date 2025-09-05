@@ -88,7 +88,12 @@ export class ProviderController {
 
   async list(req: Request, res: Response): Promise<Response> {
     try {
-      const providers = await this.listProvidersUseCase.execute();
+      const { cityId, q: query, service } = req.query;
+      const providers = await this.listProvidersUseCase.execute({
+        cityId: cityId as string,
+        query: query as string,
+        service: service as string,
+      });
 
       return res.status(200).json({
         success: true,
