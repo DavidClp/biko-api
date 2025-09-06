@@ -1,17 +1,29 @@
-# Etapa 1: build
-FROM node:20-alpine AS builder
+FROM node:20
+
 WORKDIR /app
 
+# Copia package.json e package-lock.json
 COPY package*.json ./
-RUN npm install --production
 
+# Instala dependências
+RUN npm install --legacy-peer-deps
+
+# Copia todo o código
 COPY . .
 
-# Etapa 2: runtime
-FROM node:20-alpine
-WORKDIR /app
+# Compila o TypeScript
+RUN npm run build
 
-COPY --from=builder /app ./
+# Variáveis de ambiente
+ARG PORT
+ENV PORT=$PORT
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
+ARG JWT_SECRET
+ENV JWT_SECRET=$JWT_SECRET
 
-EXPOSE 3000
+# Expõe porta para Nginx Proxy Manager
+EXPOSE $PORT
+
+# Comando de start
 CMD ["npm", "start"]
