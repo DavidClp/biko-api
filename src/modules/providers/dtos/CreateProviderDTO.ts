@@ -3,7 +3,7 @@ import { ICreateUser } from "@/modules/shared/dtos/IUser";
 export interface CreateProviderDTO extends ICreateUser {
   userId: string;
   name: string;
-  service: string;
+  services: string[];
   description?: string;
   city: string;
   phone?: string;

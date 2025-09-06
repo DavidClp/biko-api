@@ -24,7 +24,6 @@ export class CreateProviderUseCase {
       role: Role.PROVIDER,
     })
 
-
     const provider = await this.providerRepository.create({
       ...data,
       userId: user.id

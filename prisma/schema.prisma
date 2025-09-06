@@ -44,7 +44,6 @@ model Provider {
   id          String         @id @default(uuid())
   userId      String         @unique
   name        String
-  service     String
   description String?
   cityId      String?
   phone       String?

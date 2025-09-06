@@ -3,7 +3,7 @@ import { CreateProviderDTO, UpdateProviderDTO, ProviderResponseDTO } from '../dt
 export interface IGetListProvidersDTO {
   cityId: string;
   query: string;
-  service: string;
+  services: string[];
 }
 
 export interface IProviderRepository {

@@ -88,11 +88,14 @@ export class ProviderController {
 
   async list(req: Request, res: Response): Promise<Response> {
     try {
-      const { cityId, q: query, service } = req.query;
+      const { cityId, q: query, services } = req.query;
+
+      const servicesArray = services ? services.toString().split(',') : [];
+
       const providers = await this.listProvidersUseCase.execute({
         cityId: cityId as string,
         query: query as string,
-        service: service as string,
+        services: servicesArray as string[],
       });
 
       return res.status(200).json({
