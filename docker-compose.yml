@@ -2,13 +2,18 @@ version: "3.8"
 
 services:
   biko-api:
-    build: .
+    build:
+      context: .
+      args:
+        PORT: ${PORT}
+        DATABASE_URL: ${DATABASE_URL}
+        JWT_SECRET: ${JWT_SECRET}
     container_name: biko-api
     restart: always
     networks:
       - proxy
     expose:
-      - "3001"
+      - "${PORT}"
     environment:
       NODE_ENV: production
       DATABASE_URL: ${DATABASE_URL}

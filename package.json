@@ -10,7 +10,7 @@
     "db:push": "prisma db push",
     "db:pull": "prisma db pull && prisma generate",
     "db:generate": "prisma generate",
-    "build": "yarn remove sharp && yarn add sharp@0.33.3 --ignore-engines && rm -rf build && yarn db:generate && tsc",
+    "build": "tsc --noEmitOnError false",
     "build-windows": "yarn remove sharp && yarn add sharp@0.33.3 --ignore-engines && rimraf build && yarn db:generate && tsc"
   },
   "keywords": [],

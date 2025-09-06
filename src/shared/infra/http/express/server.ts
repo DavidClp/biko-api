@@ -20,7 +20,7 @@ async function startServer() {
     const dbConnected = await testDatabaseConnection();
     
     if (dbConnected) {
-        serverHttp.listen(port, "0.0.0.0", () => {
+        serverHttp.listen(port, () => {
             console.log(`\n🚀 - SERVIDOR RODANDO NA PORTA ${port}`);
         });
     } else {

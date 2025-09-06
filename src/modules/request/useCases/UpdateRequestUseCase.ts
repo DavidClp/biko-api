@@ -29,7 +29,7 @@ export class UpdateRequestUseCase {
   }
 
   private async validateData(data: UpdateRequestDTO): Promise<void> {
-    if (data.value && data.value < 0) {
+    if (data.value && data.value.lessThan(0)) {
       throw new AppError({
         title: 'Valor inválido',
         detail: 'O valor deve ser maior ou igual a zero',

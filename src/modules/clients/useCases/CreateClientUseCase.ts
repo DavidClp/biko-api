@@ -42,9 +42,11 @@ export class CreateClientUseCase {
     );
 
     return {
-      ...user,
-      client,
-      provider: null,
+      user: {
+        ...user,
+        client,
+        provider: null,
+      },
       token,
     };
   }
