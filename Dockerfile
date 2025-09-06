@@ -12,6 +12,7 @@ RUN npm install --legacy-peer-deps
 COPY . .
 
 # Compila o TypeScript
+RUN npm run db:generate
 RUN npm run build
 
 # Variáveis de ambiente
