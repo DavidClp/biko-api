@@ -21,19 +21,23 @@ jobs:
       - name: Deploy to VPS
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+            set -e
+
             if [ ! -d "/root/biko-api/.git" ]; then
+              rm -rf /root/biko-api
               git clone https://github.com/${{ github.repository }} /root/biko-api
+            else
+              cd /root/biko-api
+              git fetch origin main
+              git reset --hard origin/main
             fi
 
             cd /root/biko-api
-            git reset --hard
-            git pull origin main
 
-            # criar .env com secrets
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
             echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
             echo "PORT=${{ secrets.PORT }}" >> .env
-            
-            # subir containers
+
+            # subir containers com Docker Compose
             docker compose up -d --build
           EOF
