@@ -34,10 +34,10 @@ jobs:
 
             cd /root/biko-api
 
-            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
-            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+            echo "NODE_ENV=production" > .env
             echo "PORT=${{ secrets.PORT }}" >> .env
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
 
-            # subir containers com Docker Compose
             docker compose up -d --build
           EOF

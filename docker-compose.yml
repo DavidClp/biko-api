@@ -13,6 +13,24 @@ services:
     ports:
       - "${PORT}:${PORT}"
 
+  db:
+    image: postgres:15
+    container_name: biko-db
+    restart: always
+    networks:
+      - proxy
+    environment:
+      POSTGRES_DB: biko-db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - biko-db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  biko-db-data:
+
 networks:
   proxy:
     external: true
