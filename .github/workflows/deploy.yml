@@ -21,8 +21,12 @@ jobs:
       - name: Deploy to VPS
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-            cd /root/biko-api || git clone https://github.com/${{ github.repository }} /root/biko-api
+            if [ ! -d "/root/biko-api/.git" ]; then
+              git clone https://github.com/${{ github.repository }} /root/biko-api
+            fi
+
             cd /root/biko-api
+            git reset --hard
             git pull origin main
 
             # criar .env com secrets
