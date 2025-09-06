@@ -13,13 +13,13 @@ interface IAuthenticateUserResponse {
     email: string;
     role: string;
     createdAt: Date;
-    provider?: {
-      id: string;
-      name: string;
-      service: string;
-      city: string;
-      status: string;
-    };
+        provider?: {
+          id: string;
+          name: string;
+          services: string[];
+          city?: string;
+          status: string;
+        };
     client?: {
       id: string;
       name: string;
@@ -41,7 +41,11 @@ export class AuthenticateUserUseCase {
           select: {
             id: true,
             name: true,
-            service: true,
+            service_provider: {
+              select: {
+                service: true
+              }
+            },
             city: true,
             status: true
           }
@@ -84,7 +88,13 @@ export class AuthenticateUserUseCase {
         email: user.email,
         role: user.role,
         createdAt: user.createdAt,
-        provider: user.provider || undefined,
+        provider: user.provider ? {
+          id: user.provider.id,
+          name: user.provider.name,
+          services: user.provider.service_provider.map(sp => sp.service.name),
+          city: user.provider.city?.name || undefined,
+          status: user.provider.status
+        } : undefined,
         client: user.client ? {
           id: user.client.id,
           name: user.client.name,

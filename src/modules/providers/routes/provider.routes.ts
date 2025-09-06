@@ -13,6 +13,6 @@ providerRoutes.get('/', providerController.list.bind(providerController));
 
 providerRoutes.put('/:id', userAuthenticatedMiddleware(), providerController.update.bind(providerController));
 
-providerRoutes.delete('/:id', userAuthenticatedMiddleware, providerController.delete.bind(providerController));
+providerRoutes.delete('/:id', userAuthenticatedMiddleware(), providerController.delete.bind(providerController));
 
 export { providerRoutes };

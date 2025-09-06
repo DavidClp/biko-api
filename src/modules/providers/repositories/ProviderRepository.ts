@@ -49,7 +49,10 @@ export class ProviderRepository implements IProviderRepository {
   async findById(id: string): Promise<ProviderResponseDTO | null> {
     try {
       const provider = await database.provider.findUnique({
-        where: { id },
+        where: { 
+          id,
+          deletedAt: null,
+        },
         include: {
           city: true,
           service_provider: {
@@ -85,7 +88,10 @@ export class ProviderRepository implements IProviderRepository {
   async findByUserId(userId: string): Promise<ProviderResponseDTO | null> {
     try {
       const provider = await database.provider.findUnique({
-        where: { userId },
+        where: { 
+          userId,
+          deletedAt: null,
+        },
         include: {
           user: true,
         },
@@ -120,6 +126,8 @@ export class ProviderRepository implements IProviderRepository {
         },
         where: {
           cityId,
+          is_listed: true,
+          deletedAt: null,
           name: { contains: query, mode: 'insensitive' },
           ...(services && services.length > 0 && {
             service_provider: {
@@ -191,8 +199,17 @@ export class ProviderRepository implements IProviderRepository {
 
   async delete(id: string): Promise<void> {
     try {
-      await database.provider.delete({
+      await database.provider.update({
         where: { id },
+        data: {
+          deletedAt: new Date(),
+          is_listed: false,
+          user: {
+            update: {
+              deletedAt: new Date(),
+            },
+          }
+        },
       });
     } catch (error) {
       throw new AppError({
@@ -207,7 +224,10 @@ export class ProviderRepository implements IProviderRepository {
   async findByStatus(status: 'PENDING' | 'APPROVED' | 'REJECTED'): Promise<ProviderResponseDTO[]> {
     try {
       const providers = await database.provider.findMany({
-        where: { status },
+        where: { 
+          status,
+          deletedAt: null,
+        },
         orderBy: { createdAt: 'desc' },
         include: {
           service_provider: {
@@ -238,7 +258,8 @@ export class ProviderRepository implements IProviderRepository {
         where: {
           city: {
             name: { contains: city, mode: 'insensitive' }
-          }
+          },
+          deletedAt: null,
         },
         orderBy: { createdAt: 'desc' },
         include: {
@@ -274,7 +295,8 @@ export class ProviderRepository implements IProviderRepository {
                 name: { contains: service, mode: 'insensitive' }
               }
             }
-          }
+          },
+          deletedAt: null,
         },
         orderBy: { createdAt: 'desc' },
         include: {

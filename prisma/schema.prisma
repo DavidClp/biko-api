@@ -49,6 +49,7 @@ model Provider {
   phone       String?
   socialLinks Json?
   photoUrl    String?
+  is_listed   Boolean        @default(true)
   status      ProviderStatus @default(PENDING)
   createdAt   DateTime       @default(now())
   deletedAt   DateTime?

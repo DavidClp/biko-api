@@ -9,4 +9,5 @@ export interface UpdateProviderDTO {
   photoUrl?: string;
   status?: ProviderStatus;
   services?: string[];
+  is_listed?: boolean;
 }
