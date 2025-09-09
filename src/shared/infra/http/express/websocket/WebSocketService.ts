@@ -186,7 +186,6 @@ export class WebSocketService {
         }
     }
 
-    // Emitir mensagens visualizadas
     async emitMessagesViewed(messageIds: string[], requestId: string, viewedBy: string) {
         try {
             if (!WebSocketService.io) {

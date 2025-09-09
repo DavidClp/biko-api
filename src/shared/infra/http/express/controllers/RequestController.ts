@@ -45,10 +45,8 @@ export class RequestSocketController {
         }
     }
 
-    // Método para emitir nova solicitação (chamado quando uma solicitação é criada)
     async emitNewRequest(requestData: any) {
         try {
-            // Emitir para todos os usuários conectados do provider específico
             this.io.to(`provider:${requestData.providerId}`).emit("request:new", requestData);
             console.log(`✅ - Nova solicitação emitida para provider ${requestData.providerId}`);
                 
