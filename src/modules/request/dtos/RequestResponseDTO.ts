@@ -11,5 +11,5 @@ export interface RequestResponseDTO {
   value?: Decimal;
   status: 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'IN_PROGRESS' | 'COMPLETED';
   createdAt: Date;  
-  unreadMessages: number;
+  unreadMessages?: number;
 }
