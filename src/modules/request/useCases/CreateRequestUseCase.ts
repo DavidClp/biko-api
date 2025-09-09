@@ -1,6 +1,7 @@
 import { IRequestRepository } from '../repositories';
 import { CreateRequestDTO, RequestResponseDTO } from '../dtos';
 import AppError from '../../../shared/errors/AppError';
+import { WebSocketService } from '@/shared/infra/http/express/websocket/WebSocketService';
 
 export class CreateRequestUseCase {
   constructor(
@@ -11,6 +12,13 @@ export class CreateRequestUseCase {
     await this.validateData(data);
 
     const request = await this.requestRepository.create(data);
+
+    try {
+      const webSocketService = WebSocketService.getInstance();
+      await webSocketService.emitNewRequest(request);
+    } catch (error) {
+      console.error('❌ - Erro ao emitir nova solicitação via WebSocket:', error);
+    }
 
     return request;
   }

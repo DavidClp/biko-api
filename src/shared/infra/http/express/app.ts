@@ -77,7 +77,6 @@ app.use((err: unknown, req: Request, res: Response, _: NextFunction) => {
 const serverHttp = http.createServer(app);
 const io = new Server(serverHttp, { cors: { origin: '*' } });
 
-// Configurar WebSocket
 setupWebSocket(io);
 
 export { app, serverHttp };

@@ -128,10 +128,25 @@ export class RequestRepository implements IRequestRepository {
         include: {
           client: true,
           provider: true,
+          messages: {
+            where: {
+              viewed: false,
+            }
+          },
         },
       });
 
-      return requests as RequestResponseDTO[];
+      const requestsWithUnreadMessages = requests.map((request) => {
+        const unreadMessages = request.messages.filter((message) => message.viewed === false).length;
+        const { messages, ...requestWithoutMessages } = request;
+
+        return {
+            ...requestWithoutMessages,
+            unreadMessages: unreadMessages,
+          };
+      });
+
+      return requestsWithUnreadMessages as RequestResponseDTO[];
     } catch (error) {
       throw new AppError({
         title: 'Erro ao buscar requests por provider',

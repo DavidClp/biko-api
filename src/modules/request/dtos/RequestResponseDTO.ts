@@ -10,5 +10,6 @@ export interface RequestResponseDTO {
   urgency?: string;
   value?: Decimal;
   status: 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'IN_PROGRESS' | 'COMPLETED';
-  createdAt: Date;
+  createdAt: Date;  
+  unreadMessages: number;
 }
