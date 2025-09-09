@@ -35,6 +35,7 @@ export class ChatSocketHandler {
 
             // Eventos do chat
             socket.on("chat:join", (data) => chatController.handleJoinRoom(data));
+            socket.on("chat:leave", (data) => chatController.handleLeaveRoom(data));
             socket.on("chat:send", (data) => chatController.handleSendMessage(data));
             socket.on("chat:viewed", (data) => chatController.handleMarkAsViewed(data));
 
