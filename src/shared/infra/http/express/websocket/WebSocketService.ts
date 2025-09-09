@@ -213,7 +213,7 @@ export class WebSocketService {
 
     // Obter usuários online
     getOnlineUsers(): OnlineUser[] {
-        return ChatController.getOnlineUsers();
+        return ChatController.getOnlineUsers() as OnlineUser[];
     }
 
     // Verificar se usuário está online

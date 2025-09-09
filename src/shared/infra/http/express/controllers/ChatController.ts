@@ -71,6 +71,7 @@ export class ChatController {
             });
 
             console.log(`✅ - Usuário ${userName} (${this.userId}) está online`);
+            console.log(`📤 - Evento user:online emitido para todos os usuários`);
         } catch (error) {
             console.error("❌ - Erro ao definir usuário como online:", error);
         }
@@ -94,6 +95,7 @@ export class ChatController {
                 });
 
                 console.log(`✅ - Usuário ${this.userId} está offline`);
+                console.log(`📤 - Evento user:offline emitido para todos os usuários`);
             }
         } catch (error) {
             console.error("❌ - Erro ao definir usuário como offline:", error);
@@ -447,6 +449,9 @@ export class ChatController {
 
             // Remover de todas as salas de digitação
             ChatController.typingUsers.delete(this.userId);
+
+            // Remover da lista de usuários online
+            ChatController.onlineUsers.delete(this.userId);
 
             console.log(`✅ - Usuário ${this.userId} desconectado`);
         } catch (error) {

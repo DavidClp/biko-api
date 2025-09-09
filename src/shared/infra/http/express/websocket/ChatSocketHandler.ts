@@ -33,6 +33,10 @@ export class ChatSocketHandler {
             const chatController = new ChatController(socket, this.io, userId);
             const requestController = new RequestSocketController(socket, this.io, userId);
 
+            // Eventos de presença
+            socket.on("user:online", () => chatController.handleUserOnline());
+            socket.on("user:offline", () => chatController.handleUserOffline());
+
             // Eventos do chat
             socket.on("chat:join", (data) => chatController.handleJoinRoom(data));
             socket.on("chat:leave", (data) => chatController.handleLeaveRoom(data));
