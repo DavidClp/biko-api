@@ -34,7 +34,7 @@ routes.use('/services', serviceRoutes);
 //routes.use('/properties', propertiesRoutes);
 
 routes.use('/ping', async (req: Request, res: Response) => {
-  return res.json('PONG - V.0.1.0')
+  return res.json('PONG - V.0.1.1')
 });
 
 export { routes };
