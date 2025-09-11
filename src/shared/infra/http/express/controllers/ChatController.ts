@@ -1,5 +1,6 @@
 import { Socket, Server } from 'socket.io';
 import { database } from "../../../database";
+import { MessageType } from '@prisma/client';
 
 interface UserPresence {
     userId: string;
@@ -32,8 +33,8 @@ export class ChatController {
         try {
             const user = await database.user.findUnique({
                 where: { id: this.userId },
-                select: { 
-                    id: true, 
+                select: {
+                    id: true,
                     provider: {
                         select: {
                             name: true
@@ -44,7 +45,7 @@ export class ChatController {
                             name: true
                         }
                     }
-                 }
+                }
             });
 
             if (!user) {
@@ -112,40 +113,17 @@ export class ChatController {
         }
 
         try {
-            // Verificar se a solicitação existe e o usuário tem permissão
-            const request = await database.request.findFirst({
-                where: {
-                    id: requestId,
-                    OR: [
-                        { client: { userId: this.userId } },
-                        { provider: { userId: this.userId } }
-                    ]
-                },
-                include: {
-                    client: { select: { id: true, name: true, userId: true } },
-                    provider: { select: { id: true, name: true, userId: true } }
-                }
-            });
-
-            if (!request) {
-                this.socket.emit("chat:error", {
-                    message: "Solicitação não encontrada ou sem permissão"
-                });
-                return;
-            }
-
-            // Carregar mensagens com paginação
             const messages = await database.message.findMany({
                 where: { request_id: requestId },
                 orderBy: { createdAt: 'desc' },
-                take: 50, // Últimas 50 mensagens
+                take: 50,
                 select: {
                     id: true,
                     content: true,
                     sender_id: true,
                     receiver_id: true,
                     createdAt: true,
-                    updatedAt: true,
+                    type: true,
                     viewed: true,
                     request_id: true,
                 }
@@ -165,7 +143,7 @@ export class ChatController {
             this.socket.join(`user:${this.userId}`); // Sala pessoal para notificações
 
             console.log(`✅ - Usuário ${this.userId} entrou na sala ${requestId}`);
-            
+
             // Enviar mensagens para o usuário
             this.socket.emit("chat:load_messages", {
                 messages: messages.reverse(), // Reverter para ordem cronológica
@@ -194,7 +172,7 @@ export class ChatController {
     async handleLeaveRoom({ requestId }: { requestId: string }) {
         try {
             this.socket.leave(requestId);
-            
+
             // Atualizar presença do usuário
             const userPresence = ChatController.onlineUsers.get(this.userId);
             if (userPresence) {
@@ -216,12 +194,12 @@ export class ChatController {
         }
     }
 
-    // Enviar mensagem
-    async handleSendMessage({ requestId, content, toUserId, providerId }: { 
-        requestId: string; 
-        content: string; 
-        toUserId: string; 
+    async handleSendMessage({ requestId, content, toUserId, providerId, type }: {
+        requestId: string;
+        content: string;
+        toUserId: string;
         providerId: string;
+        type: MessageType;
     }) {
         if (!content?.trim()) {
             this.socket.emit("chat:error", { message: "Conteúdo da mensagem é obrigatório" });
@@ -229,32 +207,14 @@ export class ChatController {
         }
 
         try {
-            // Verificar se a solicitação existe e o usuário tem permissão
-            const request = await database.request.findFirst({
-                where: {
-                    id: requestId,
-                    OR: [
-                        { client: { userId: this.userId } },
-                        { provider: { userId: this.userId } }
-                    ]
-                }
-            });
-
-            if (!request) {
-                this.socket.emit("chat:error", {
-                    message: "Solicitação não encontrada ou sem permissão"
-                });
-                return;
-            }
-
-            // Criar mensagem
             const message = await database.message.create({
                 data: {
                     request_id: requestId,
                     content: content.trim(),
                     sender_id: this.userId,
                     receiver_id: toUserId,
-                    viewed: false
+                    viewed: false,
+                    type: type || 'TEXT'
                 },
                 select: {
                     id: true,
@@ -262,9 +222,9 @@ export class ChatController {
                     sender_id: true,
                     receiver_id: true,
                     createdAt: true,
-                    updatedAt: true,
                     viewed: true,
                     request_id: true,
+                    type: true,
                 }
             });
 
@@ -294,13 +254,13 @@ export class ChatController {
     }
 
     // Marcar mensagens como visualizadas
-    async handleMarkAsViewed({ messageIds, requestId }: { 
-        messageIds: string[], 
-        requestId: string 
+    async handleMarkAsViewed({ messageIds, requestId }: {
+        messageIds: string[],
+        requestId: string
     }) {
         try {
             console.log(`📥 [${requestId}] Recebido evento para marcar ${messageIds?.length || 0} mensagens como visualizadas`);
-            
+
             if (!messageIds?.length) {
                 console.log("⚠️ - Nenhuma mensagem para marcar como visualizada");
                 return;
@@ -325,7 +285,7 @@ export class ChatController {
             });
 
             const senderIds = [...new Set(messages.map(m => m.sender_id))];
-            
+
             senderIds.forEach(senderId => {
                 this.io.to(`user:${senderId}`).emit("chat:messages_viewed", {
                     messageIds: messages.filter(m => m.sender_id === senderId).map(m => m.id),
@@ -376,13 +336,13 @@ export class ChatController {
     }
 
     // Carregar mais mensagens (paginação)
-    async handleLoadMoreMessages({ requestId, lastMessageId }: { 
-        requestId: string, 
-        lastMessageId?: string 
+    async handleLoadMoreMessages({ requestId, lastMessageId }: {
+        requestId: string,
+        lastMessageId?: string
     }) {
         try {
             const messages = await database.message.findMany({
-                where: { 
+                where: {
                     request_id: requestId,
                     ...(lastMessageId && { id: { lt: lastMessageId } })
                 },
@@ -394,7 +354,7 @@ export class ChatController {
                     sender_id: true,
                     receiver_id: true,
                     createdAt: true,
-                    updatedAt: true,
+                    type: true,
                     viewed: true,
                     request_id: true,
                 }
@@ -491,7 +451,7 @@ export class ChatController {
 
             if (unreadMessages.length > 0) {
                 const messageIds = unreadMessages.map(msg => msg.id);
-                
+
                 // Marcar como visualizadas
                 await database.message.updateMany({
                     where: { id: { in: messageIds } },
@@ -505,7 +465,7 @@ export class ChatController {
                 });
 
                 const senderIds = [...new Set(messages.map(m => m.sender_id))];
-                
+
                 senderIds.forEach(senderId => {
                     this.io.to(`user:${senderId}`).emit("chat:messages_viewed", {
                         messageIds: messages.filter(m => m.sender_id === senderId).map(m => m.id),

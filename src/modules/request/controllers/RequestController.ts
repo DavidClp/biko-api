@@ -10,10 +10,13 @@ import {
 import { RequestRepository } from '../repositories';
 import { CreateRequestDTO, UpdateRequestDTO } from '../dtos';
 import AppError from '../../../shared/errors/AppError';
+import { SendBudgetRequestDTO } from '../dtos/SendBudgetRequestDTO';
+import { SendBudgetRequestUseCase } from '../useCases/SendBudgetRequestUseCase';
 
 export class RequestController {
   private createRequestUseCase: CreateRequestUseCase;
   private updateRequestUseCase: UpdateRequestUseCase;
+  private sendBudgetRequestUseCase: SendBudgetRequestUseCase;
   private listRequestsUseCase: ListRequestsUseCase;
   private getRequestByIdUseCase: GetRequestByIdUseCase;
   private getRequestsByClientIdUseCase: GetRequestsByClientIdUseCase;
@@ -25,6 +28,7 @@ export class RequestController {
     this.createRequestUseCase = new CreateRequestUseCase(requestRepository);
     this.updateRequestUseCase = new UpdateRequestUseCase(requestRepository);
     this.listRequestsUseCase = new ListRequestsUseCase(requestRepository);
+    this.sendBudgetRequestUseCase = new SendBudgetRequestUseCase(requestRepository);
     this.getRequestByIdUseCase = new GetRequestByIdUseCase(requestRepository);
     this.getRequestsByClientIdUseCase = new GetRequestsByClientIdUseCase(requestRepository);
     this.getRequestsByProviderIdUseCase = new GetRequestsByProviderIdUseCase(requestRepository);
@@ -87,6 +91,17 @@ export class RequestController {
         },
       });
     }
+  }
+
+  async sendBudget(req: Request, res: Response): Promise<Response> {
+    const { id } = req.params;
+    const data: SendBudgetRequestDTO = req.body;
+    await this.sendBudgetRequestUseCase.execute(id, data);
+
+    return res.status(200).json({
+      success: true,
+      message: 'Orçamento enviado com sucesso',
+    });
   }
 
   async list(req: Request, res: Response): Promise<Response> {

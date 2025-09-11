@@ -23,4 +23,6 @@ requestRoutes.post('/', userAuthenticatedMiddleware(), requestController.create.
 // Rota para atualizar um request
 requestRoutes.put('/:id', userAuthenticatedMiddleware(), requestController.update.bind(requestController));
 
+requestRoutes.post('/send-budget/:id', userAuthenticatedMiddleware(), requestController.sendBudget.bind(requestController));
+
 export { requestRoutes };

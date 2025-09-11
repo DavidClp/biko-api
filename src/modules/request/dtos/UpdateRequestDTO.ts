@@ -7,5 +7,7 @@ export interface UpdateRequestDTO {
   address?: string;
   urgency?: string;
   value?: Decimal;
+  budget?: Decimal;
+  observation?: string;
   status?: RequestStatus;
 }
