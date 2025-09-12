@@ -92,6 +92,27 @@ socket.on('chat:proposal_status_update', (data) => {
 });
 ```
 
+### 5. `chat:request_status_update` - Atualizar status de solicitação
+**Enviar:**
+```javascript
+socket.emit('chat:request_status_update', {
+  requestId: 'id-do-request',
+  status: 'ACCEPTED', // ou 'PENDING', 'REJECTED', 'COMPLETED', 'ON_BUDGET'
+  budgetStatus: 'ACCEPTED' // ou 'PENDING', 'REJECTED', 'CANCELLED'
+});
+```
+
+**Receber:**
+```javascript
+// Status da solicitação atualizado (para todos na sala)
+socket.on('chat:request_status_update', (data) => {
+  console.log('Status da solicitação atualizado:', data);
+  // data.requestId - ID do request
+  // data.status - Novo status da solicitação
+  // data.budgetStatus - Novo status do orçamento
+});
+```
+
 ## 📊 Estrutura das Mensagens
 
 Cada mensagem retornada contém:

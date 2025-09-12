@@ -454,7 +454,45 @@ export class ChatController {
         }
     }
 
-    // Desconexão
+    async handleRequestStatusUpdate(data: { 
+        requestId: string, 
+        status: string, 
+        budgetStatus: string 
+    }) {
+        try {
+            const { requestId, status, budgetStatus } = data;
+
+            console.log("📊 Recebendo atualização de status de request:", {
+                requestId,
+                status,
+                budgetStatus,
+                userId: this.userId
+            });
+
+            await database.request.update({
+                where: { id: requestId },
+                data: { 
+                    status: status as any,
+                    budgetStatus: budgetStatus as any
+                }
+            });
+
+            const updateData = {
+                requestId,
+                status,
+                budgetStatus
+            };
+            
+            console.log("📤 Emitindo evento chat:request_status_update para sala", requestId, ":", updateData);
+            this.io.to(requestId).emit("chat:request_status_update", updateData);
+
+        } catch (error) {
+            console.error("❌ Erro ao atualizar status de request:", error);
+            this.socket.emit("chat:error", { message: "Erro interno do servidor" });
+        }
+    }
+
+    // Dsconexão
     handleDisconnect() {
         try {
             // Marcar usuário como offline
