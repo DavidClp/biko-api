@@ -408,6 +408,52 @@ export class ChatController {
         }
     }
 
+    async handleProposalStatusUpdate(data: { messageId: string, requestId: string, newType: string }) {
+        try {
+            const { messageId, requestId, newType } = data;
+
+            const message = await database.message.findUnique({
+                where: { id: messageId },
+                select: {
+                    id: true,
+                    request_id: true,
+                    type: true,
+                    sender_id: true
+                }
+            });
+
+            if (!message) {
+                this.socket.emit("chat:error", { message: "Mensagem não encontrada" });
+                return;
+            }
+
+            if (message.request_id !== requestId) {
+                this.socket.emit("chat:error", { message: "Mensagem não pertence a este request" });
+                return;
+            }
+
+            if (message.type !== "PROPOSAL") {
+                this.socket.emit("chat:error", { message: "Mensagem não é uma proposta" });
+                return;
+            }
+
+            await database.message.update({
+                where: { id: messageId },
+                data: { type: newType as MessageType }
+            });
+
+            const updateData = {
+                messageId,
+                requestId,
+                newType
+            };
+            
+            this.io.to(requestId).emit("chat:proposal_status_update", updateData);
+        } catch (error) {
+            this.socket.emit("chat:error", { message: "Erro interno do servidor" });
+        }
+    }
+
     // Desconexão
     handleDisconnect() {
         try {

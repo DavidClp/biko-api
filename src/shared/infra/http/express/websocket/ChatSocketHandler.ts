@@ -42,6 +42,7 @@ export class ChatSocketHandler {
             socket.on("chat:leave", (data) => chatController.handleLeaveRoom(data));
             socket.on("chat:send", (data) => chatController.handleSendMessage(data));
             socket.on("chat:viewed", (data) => chatController.handleMarkAsViewed(data));
+            socket.on("chat:proposal_status_update", (data) => chatController.handleProposalStatusUpdate(data));
 
             socket.on("request:subscribe-provider", (data) => requestController.handleSubscribeToRequests(data));
             socket.on("request:unsubscribe-provider", (data) => requestController.handleUnsubscribeFromRequests(data));

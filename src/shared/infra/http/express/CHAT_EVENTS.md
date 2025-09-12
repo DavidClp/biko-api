@@ -71,6 +71,27 @@ socket.on('chat:message_viewed', (message) => {
 });
 ```
 
+### 4. `chat:proposal_status_update` - Atualizar status de proposta
+**Enviar:**
+```javascript
+socket.emit('chat:proposal_status_update', {
+  messageId: 'id-da-mensagem-proposta',
+  requestId: 'id-do-request',
+  newType: 'PROPOSAL_ACCEPTED' // ou 'PROPOSAL_REJECTED' ou 'PROPOSAL_CANCELLED'
+});
+```
+
+**Receber:**
+```javascript
+// Status da proposta atualizado (para todos na sala)
+socket.on('chat:proposal_status_update', (data) => {
+  console.log('Status da proposta atualizado:', data);
+  // data.messageId - ID da mensagem
+  // data.requestId - ID do request
+  // data.newType - Novo tipo da mensagem
+});
+```
+
 ## 📊 Estrutura das Mensagens
 
 Cada mensagem retornada contém:
