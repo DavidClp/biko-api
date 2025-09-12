@@ -1,4 +1,4 @@
-import { RequestStatus } from "@prisma/client";
+import { RequestBudgetStatus, RequestStatus } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 
 export interface UpdateRequestDTO {
@@ -10,4 +10,5 @@ export interface UpdateRequestDTO {
   budget?: Decimal;
   observation?: string;
   status?: RequestStatus;
+  budgetStatus?: RequestBudgetStatus;
 }

@@ -1,6 +1,6 @@
 import { Socket, Server } from 'socket.io';
 import { database } from "../../../database";
-import { MessageType } from '@prisma/client';
+import { MessageType, RequestBudgetStatus } from '@prisma/client';
 
 interface UserPresence {
     userId: string;
@@ -207,6 +207,14 @@ export class ChatController {
         }
 
         try {
+            if (type === MessageType.PROPOSAL) {
+                // marcar as propostas antigas como rejeitadas
+                await database.message.updateMany({
+                    where: { request_id: requestId, type: MessageType.PROPOSAL },
+                    data: { type: MessageType.PROPOSAL_REJECTED }
+                });
+            }
+
             const message = await database.message.create({
                 data: {
                     request_id: requestId,
@@ -242,8 +250,7 @@ export class ChatController {
 
             console.log(`🔔 Notificação enviada para usuário: ${toUserId}`);
 
-            // Parar indicador de digitação
-            this.handleStopTyping({ requestId });
+            //this.handleStopTyping({ requestId });
 
         } catch (error) {
             console.error("❌ - Erro ao enviar mensagem:", error);

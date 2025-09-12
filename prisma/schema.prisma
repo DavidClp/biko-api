@@ -90,6 +90,7 @@ model Request {
   value        Decimal?      @default(0) @db.Decimal(10, 2)
   budget       Decimal?      @default(0) @db.Decimal(10, 2)
   observation  String?
+  budgetStatus RequestBudgetStatus @default(PENDING)
   status       RequestStatus @default(PENDING)
   createdAt    DateTime      @default(now())
   client       Client        @relation(fields: [clientId], references: [id])
@@ -149,8 +150,16 @@ enum ProviderStatus {
 enum RequestStatus {
   PENDING
   ACCEPTED
+  ON_BUDGET
   REJECTED
   COMPLETED
+}
+
+enum RequestBudgetStatus {
+  PENDING
+  ACCEPTED
+  CANCELLED
+  REJECTED
 }
 
 enum MessageType {
@@ -158,4 +167,7 @@ enum MessageType {
   IMAGE
   VIDEO
   PROPOSAL
+  PROPOSAL_ACCEPTED
+  PROPOSAL_CANCELLED
+  PROPOSAL_REJECTED
 }

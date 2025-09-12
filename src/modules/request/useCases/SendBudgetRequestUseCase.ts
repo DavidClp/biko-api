@@ -2,6 +2,7 @@ import { IRequestRepository } from '../repositories';
 import { RequestResponseDTO } from '../dtos';
 import AppError from '../../../shared/errors/AppError';
 import { SendBudgetRequestDTO } from '../dtos/SendBudgetRequestDTO';
+import { RequestBudgetStatus, RequestStatus } from '@prisma/client';
 
 export class SendBudgetRequestUseCase {
   constructor(
@@ -11,7 +12,13 @@ export class SendBudgetRequestUseCase {
   async execute(id: string, data: SendBudgetRequestDTO): Promise<void> {
     await this.validateRequestExists(id);
 
-    await this.requestRepository.update(id, { budget: data.budget, observation: data.observation });
+    await this.requestRepository.update(id,
+      {
+        budget: data.budget,
+        observation: data.observation,
+        budgetStatus: RequestBudgetStatus.PENDING,
+        status: RequestStatus.ON_BUDGET
+      });
   }
 
   private async validateRequestExists(id: string): Promise<void> {
