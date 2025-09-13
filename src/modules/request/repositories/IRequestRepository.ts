@@ -1,3 +1,4 @@
+import { RequestStatus } from '@prisma/client';
 import { CreateRequestDTO, UpdateRequestDTO, RequestResponseDTO } from '../dtos';
 
 export interface IRequestRepository {
@@ -8,5 +9,5 @@ export interface IRequestRepository {
   delete(id: string): Promise<void>;
   findByClientId(clientId: string): Promise<RequestResponseDTO[]>;
   findByProviderId(providerId: string): Promise<RequestResponseDTO[]>;
-  findByStatus(status: 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'IN_PROGRESS' | 'COMPLETED'): Promise<RequestResponseDTO[]>;
+  findByStatus(status: RequestStatus): Promise<RequestResponseDTO[]>;
 }

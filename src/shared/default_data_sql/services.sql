@@ -1,4 +1,4 @@
-INSERT INTO service (id, name, createdAt, updatedAt)
+INSERT INTO service (id, name, "createdAt", "updatedAt")
 VALUES
   (gen_random_uuid(), 'Pintor', NOW(), NOW()),
   (gen_random_uuid(), 'Eletricista', NOW(), NOW()),

@@ -41,7 +41,7 @@ model Client {
 }
 
 model Provider {
-  id          String         @id @default(uuid())
+  id          String         @id @default(uuid()) @db.Uuid
   userId      String         @unique
   name        String
   description String?
@@ -54,17 +54,20 @@ model Provider {
   createdAt   DateTime       @default(now())
   deletedAt   DateTime?
   updatedAt   DateTime       @updatedAt
+  subscription_id  String?            @db.Uuid
 
   user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   requests         Request[]
   city             cities?            @relation(fields: [cityId], references: [id])
   service_provider service_provider[]
+  transactions     transactions[]
+  subscriptions    subscriptions?     @relation(fields: [subscription_id], references: [id])
 }
 
 model service_provider {
   id          String   @id @default(uuid())
   service_id  String
-  provider_id String
+  provider_id String   @db.Uuid
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   service     service  @relation(fields: [service_id], references: [id])
@@ -80,21 +83,21 @@ model service {
 }
 
 model Request {
-  id           String        @id @default(uuid())
+  id           String              @id @default(uuid())
   clientId     String
-  providerId   String
+  providerId   String              @db.Uuid
   service_type String
   description  String?
   address      String?
   urgency      String?
-  value        Decimal?      @default(0) @db.Decimal(10, 2)
-  budget       Decimal?      @default(0) @db.Decimal(10, 2)
+  value        Decimal?            @default(0) @db.Decimal(10, 2)
+  budget       Decimal?            @default(0) @db.Decimal(10, 2)
   observation  String?
   budgetStatus RequestBudgetStatus @default(PENDING)
-  status       RequestStatus @default(PENDING)
-  createdAt    DateTime      @default(now())
-  client       Client        @relation(fields: [clientId], references: [id])
-  provider     Provider      @relation(fields: [providerId], references: [id])
+  status       RequestStatus       @default(PENDING)
+  createdAt    DateTime            @default(now())
+  client       Client              @relation(fields: [clientId], references: [id])
+  provider     Provider            @relation(fields: [providerId], references: [id])
   messages     Message[]
 }
 
@@ -133,6 +136,65 @@ model state {
   updatedAt       DateTime
   name_no_accents String?
   cities          cities[]
+}
+
+model plans {
+  id                             String          @id @default(uuid()) @db.Uuid
+  name                           String
+  description                    String
+  icon                           String
+  active                         Boolean         @default(false)
+  value                          Decimal         @db.Decimal(10, 2)
+  frequency                      Int             @default(1)
+  recurrence                     Int?
+  permissions                    Json            @default("[]")
+  is_test_free                   Boolean         @default(false)
+  createdAt                      DateTime        @default(now())
+  updatedAt                      DateTime        @updatedAt
+  gateway_id                     Int?
+  subscriptions                  subscriptions[]
+}
+
+model transactions {
+  id                      String         @id @default(uuid()) @db.Uuid
+  friendly_id             String?        @db.VarChar(255)
+  query_id                String?        @db.Uuid
+  contract_id             String?        @db.Uuid
+  method                  String         @db.VarChar(255)
+  card_flag               String         @default("N/A") @db.VarChar(255)
+  card_mask               String         @default("N/A") @db.VarChar(255)
+  type                    String         @db.VarChar(255)
+  status                  String         @db.VarChar(255)
+  value                   Decimal        @db.Decimal(10, 2)
+  description             String         @db.VarChar(255)
+  provider_id             String?        @db.Uuid
+  subscription_id         String?        @db.Uuid
+  createdAt               DateTime       @default(now())
+  updatedAt               DateTime       @updatedAt
+  credit_card_id          String?        @db.Uuid
+  gateway_id              Int?
+  data_payment            DateTime?
+  provider                Provider?      @relation(fields: [provider_id], references: [id])
+  subscriptions           subscriptions? @relation(fields: [subscription_id], references: [id])
+}
+
+model subscriptions {
+  card_flag           String         @db.VarChar(255)
+  card_mask           String         @db.VarChar(255)
+  next_execution      String?        @db.VarChar(255)
+  next_expire_at      String?        @db.VarChar(255)
+  status              String         @db.VarChar(255)
+  value               Decimal        @db.Decimal(10, 2)
+  plan_id             String         @db.Uuid
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  credit_card_id      String?        @db.Uuid
+  gateway_id          Int?
+  id                  String         @id @default(uuid()) @db.Uuid
+  banking_billet_info Json?
+  provider            Provider[]
+  plans               plans          @relation(fields: [plan_id], references: [id])
+  transactions        transactions[]
 }
 
 enum Role {

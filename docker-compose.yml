@@ -10,6 +10,15 @@ services:
       PORT: ${PORT}
       DATABASE_URL: ${DATABASE_URL}
       JWT_SECRET: ${JWT_SECRET}
+      GERENCIANET_CLIENT_ID: ${GERENCIANET_CLIENT_ID}
+      GERENCIANET_CLIENT_SECRET: ${GERENCIANET_CLIENT_SECRET}
+      GERENCIANET_URL: ${GERENCIANET_URL}
+      WEBHOOK_URL: ${WEBHOOK_URL}
+      GERENCIANET_CERT_PATH: /certs/prod.p12
+      MODE: PROD
+      EXECUTE_ROUTINES: true
+    volumes:
+      - ./certs/prod.p12:/certs/prod.p12:ro
     ports:
       - "${PORT}:${PORT}"
 

@@ -79,4 +79,4 @@ const io = new Server(serverHttp, { cors: { origin: '*' } });
 
 setupWebSocket(io);
 
-export { app, serverHttp };
+export { app, serverHttp, io };
