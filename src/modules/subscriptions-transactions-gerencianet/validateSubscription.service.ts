@@ -1,24 +1,23 @@
-import AppError from "../../../../shared/errors/AppError"
-import { database } from "../../../../shared/infra/database"
-import { transactionsAttributes } from "../../interfaces"
+import AppError from "@/shared/errors/AppError"
+import { transactionsAttributes } from "../shared/interfaces"
 
 interface IValidateSubscriptionService {
-    business?: any
+    provider?: any
 }
 
 const NOT_PAID = { message: "Franchise subscription not paid", status: 402, path: "subscription-not-paid", entity: null }
 
 const WAITING_BLOCK = { message: "Franchise subscription not paid", status: 402, path: "subscription-waiting-block", entity: null }
 
-const FRANCHISE_NOT_FOUND = { message: "Franchise not found", status: 404, path: '', entity: '' }
+const PROVIDER_NOT_FOUND = { message: "Provider not found", status: 404, path: '', entity: '' }
 
-const NOT_HAVE_SUBSCRIPTION = { message: "Franchise not have subscription", status: 402, path: "not-have-subscription", entity: null }
+const NOT_HAVE_SUBSCRIPTION = { message: "Provider not have subscription", status: 402, path: "not-have-subscription", entity: null }
 
-const NOT_HAVE_TRANSACTIONS = { message: "Franchise not have transactions", status: 402, path: "not-have-transactions", entity: null }
+const NOT_HAVE_TRANSACTIONS = { message: "Provider not have transactions", status: 402, path: "not-have-transactions", entity: null }
 
-const SUBSCRIPTION_CANCELED = { message: "Franchise subscription canceled", status: 402, path: "subscription-canceled", entity: null }
+const SUBSCRIPTION_CANCELED = { message: "Provider subscription canceled", status: 402, path: "subscription-canceled", entity: null }
 
-const SUBSCRIPTION_EXPIRED = { message: "Franchise subscription expired", status: 402, path: "subscription-expired", entity: null }
+const SUBSCRIPTION_EXPIRED = { message: "Provider subscription expired", status: 402, path: "subscription-expired", entity: null }
 
 const PAID_STATUS = ["paid", "settled", "paid-free"]
 
@@ -32,22 +31,22 @@ export const isBiggerThan = (date1: Date, date2: Date, limit: number) => {
 
 
 export const validateSubscriptionUseCase = async (props: IValidateSubscriptionService) => {
-    let { business } = props
+    let { provider } = props
 
-    const transactions: any = business?.subscriptions?.transactions?.sort((a: any, b: any) => {
+    const transactions: any = provider?.subscriptions?.transactions?.sort((a: any, b: any) => {
         const date_a = new Date(a.createdAt)
         const date_b = new Date(b.createdAt)
         return date_a.getTime() < date_b.getTime() ? 1 : -1
     }) as transactionsAttributes[]
 
-    const subscription = business?.subscriptions
+    const subscription = provider?.subscriptions
 
-    if (!business) {
+    if (!provider) {
         throw new AppError({
-            detail: FRANCHISE_NOT_FOUND.message,
-            title: FRANCHISE_NOT_FOUND.message,
-            statusCode: FRANCHISE_NOT_FOUND.status,
-            field: FRANCHISE_NOT_FOUND.path
+            detail: PROVIDER_NOT_FOUND.message,
+            title: PROVIDER_NOT_FOUND.message,
+            statusCode: PROVIDER_NOT_FOUND.status,
+            field: PROVIDER_NOT_FOUND.path
         });
     }
 
@@ -165,7 +164,7 @@ export const validateSubscriptionUseCase = async (props: IValidateSubscriptionSe
             else return "paid-free"
         }
 
-        const plan_is_free = (business?.subscription?.plan?.value ?? 0) > 0 ? false : true
+        const plan_is_free = (provider?.subscription?.plan?.value ?? 0) > 0 ? false : true
         if (plan_is_free) return "paid"
 
         if (isBiggerThan(atual_date, transaction_created_at, 32)) {

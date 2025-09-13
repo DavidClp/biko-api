@@ -9,16 +9,15 @@ import { Request, Response, Router } from 'express';
 import { importTransactionOfGerencianetService } from '@/modules/subscriptions-transactions-gerencianet/importTransactionOfGerencianet.service';
 import { importSubscriptionOfGerencianetService } from '@/modules/subscriptions-transactions-gerencianet/importSubscriptionOfGerencianet.service';
 import { plansRoutes } from '@/modules/plans/infra/http/express/routes';
+import { subscriptionsRouter } from '@/modules/subscriptions/routes/subscriptions.routes';
+import { transactionsRouter } from '@/modules/transactions/routes/transactions.routes';
 
 const routes = Router();
 
-// Rotas de autenticação
 routes.use('/auth', authRoutes);
 
-// Rotas de providers
 routes.use('/providers', providerRoutes);
 
-// Rotas de clients
 routes.use('/clients', clientRoutes);
 
 routes.use('/cities', cityRoutes);
@@ -30,6 +29,10 @@ routes.use('/messages', messageRoutes);
 routes.use('/services', serviceRoutes);
 
 routes.use('/plans', plansRoutes);
+
+routes.use('/subscriptions', subscriptionsRouter);
+
+routes.use('/transactions', transactionsRouter);
 
 //routes.use(sharedRoutes);
 //routes.use('/properties', propertiesRoutes);

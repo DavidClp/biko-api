@@ -12,4 +12,5 @@ export interface ProviderResponseDTO {
   status: 'PENDING' | 'APPROVED' | 'REJECTED';
   createdAt: Date;
   updatedAt: Date;
+  subscription_id?: string;
 }
