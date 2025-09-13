@@ -37,14 +37,5 @@ export class UpdateRequestUseCase {
         statusCode: 400,
       });
     }
-
-    if (data.status && !['PENDING', 'ACCEPTED', 'REJECTED', 'IN_PROGRESS', 'COMPLETED'].includes(data.status)) {
-      throw new AppError({
-        title: 'Status inválido',
-        detail: 'O status deve ser PENDING, ACCEPTED, REJECTED, IN_PROGRESS ou COMPLETED',
-        origin: 'UpdateRequestUseCase.execute',
-        statusCode: 400,
-      });
-    }
   }
 }

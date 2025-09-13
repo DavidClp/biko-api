@@ -153,6 +153,8 @@ enum RequestStatus {
   ON_BUDGET
   REJECTED
   COMPLETED
+  CANCELLED_BY_CLIENT
+  CANCELLED_BY_PROVIDER
 }
 
 enum RequestBudgetStatus {
