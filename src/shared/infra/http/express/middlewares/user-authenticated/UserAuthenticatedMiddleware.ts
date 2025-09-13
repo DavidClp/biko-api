@@ -1,4 +1,4 @@
-import { verify } from 'jsonwebtoken';
+import { JsonWebTokenError, verify } from 'jsonwebtoken';
 import { database } from '../../../../database';
 import { NextFunction, Request, Response } from 'express';
 import { UnauthorizedError } from '../../../../../errors/UnauthorizedError';
@@ -66,7 +66,8 @@ export const userAuthenticatedMiddleware = () => {
 
       return next();
     } catch (err) {
-      if (err instanceof UnauthorizedError) {
+      console.log(err);
+      if (err instanceof UnauthorizedError || err instanceof JsonWebTokenError) {
         return res.status(401).json({
           success: false,
           error: {

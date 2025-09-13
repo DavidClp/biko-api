@@ -25,6 +25,7 @@ export class AuthenticateUserController {
         message: 'Usuário autenticado com sucesso',
       });
     } catch (error) {
+      console.log(error);
       if (error instanceof Error) {
         return response.status(401).json({
           error: error.message
