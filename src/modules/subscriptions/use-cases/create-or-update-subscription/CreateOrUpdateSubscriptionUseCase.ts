@@ -49,8 +49,10 @@ export class CreateOrUpdateSubscriptionUseCase {
 		const planIsFree = Number(totalValueforSubscription) <= 0;
 
 		if (!planIsFree) {
+			console.log("AQUII",banking_billet, totalValueforSubscription)
 			const { gateway_id, status } = await createSubscriptionInGerencianet({ plan_id, credit_card, banking_billet, totalValueforSubscription });
 			
+			console.log('gateway_id', gateway_id)
 			newSubscriptionData = {
 				gateway_id,
 				plan_id,

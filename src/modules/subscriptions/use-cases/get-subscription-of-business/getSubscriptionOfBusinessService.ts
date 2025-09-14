@@ -1,6 +1,7 @@
 import { validateSubscriptionUseCase } from "@/modules/subscriptions-transactions-gerencianet/validateSubscription.service";
 import AppError from "../../../../shared/errors/AppError";
 import { database } from "../../../../shared/infra/database";
+import { correctSituations } from "@/shared/utils/correctSituations";
 
 interface IGetSubscriptionOfBusinessService {
     provider_id: string
