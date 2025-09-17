@@ -12,6 +12,7 @@ import { CreateRequestDTO, UpdateRequestDTO } from '../dtos';
 import AppError from '../../../shared/errors/AppError';
 import { SendBudgetRequestDTO } from '../dtos/SendBudgetRequestDTO';
 import { SendBudgetRequestUseCase } from '../useCases/SendBudgetRequestUseCase';
+import { uploadToS3 } from '@/shared/helpers/uploadToS3';
 
 export class RequestController {
   private createRequestUseCase: CreateRequestUseCase;
