@@ -1,32 +1,32 @@
 import { Request, Response } from 'express';
-import { ListCitiesUseCase } from '../useCases/ListCitiesUseCase';
-import { CityRepository } from '../repositories/CityRepository';
-import { ListCitiesDTO } from '../dtos/ListCitiesDTO';
+import { ListStatesUseCase } from '../useCases/ListStatesUseCase';
+import { StateRepository } from '../repositories/StateRepository';
+import { ListStatesDTO } from '../dtos/ListStatesDTO';
 import AppError from '../../../shared/errors/AppError';
 
-export class CityController {
-  private listCitiesUseCase: ListCitiesUseCase;
+export class StateController {
+  private listStatesUseCase: ListStatesUseCase;
 
   constructor() {
-    const cityRepository = new CityRepository();
-    this.listCitiesUseCase = new ListCitiesUseCase(cityRepository);
+    const stateRepository = new StateRepository();
+    this.listStatesUseCase = new ListStatesUseCase(stateRepository);
   }
 
   async list(req: Request, res: Response): Promise<Response> {
     try {
       const { search, limit, page } = req.query;
       
-      const params: ListCitiesDTO = {
+      const params: ListStatesDTO = {
         search: search as string,
-        limit: limit ? parseInt(limit as string) : 855,
+        limit: limit ? parseInt(limit as string) : 30,
         page: page ? parseInt(page as string) : 1,
       };
 
-      const result = await this.listCitiesUseCase.execute(params);
+      const result = await this.listStatesUseCase.execute(params);
 
       return res.status(200).json({
         success: true,
-        data: result.cities,
+        data: result.states,
         pagination: {
           total: result.total,
           page: result.page,

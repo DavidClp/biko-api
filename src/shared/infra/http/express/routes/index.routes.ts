@@ -2,6 +2,7 @@ import { providerRoutes } from '@/modules/providers/routes/provider.routes';
 import { clientRoutes } from '@/modules/clients/routes/client.routes';
 import { authRoutes } from '@/modules/auth/login/routes/auth.routes';
 import { cityRoutes } from '@/modules/cities/routes/city.routes';
+import { stateRoutes } from '@/modules/states/routes/state.routes';
 import { requestRoutes } from '@/modules/request/routes/request.routes';
 import { messageRoutes } from '@/modules/messages/routes/message.routes';
 import { serviceRoutes } from '@/modules/shared/routes/service.routes';
@@ -21,6 +22,8 @@ routes.use('/providers', providerRoutes);
 routes.use('/clients', clientRoutes);
 
 routes.use('/cities', cityRoutes);
+
+routes.use('/states', stateRoutes);
 
 routes.use('/requests', requestRoutes);
 
