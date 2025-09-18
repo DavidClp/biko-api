@@ -35,17 +35,24 @@ jobs:
             cd /root/biko-api
 
             echo "NODE_ENV=production" > .env
+            echo "MODE=PROD" >> .env
+            echo "EXECUTE_ROUTINES=true" >> .env
             echo "PORT=${{ secrets.PORT }}" >> .env
+
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
             echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+
             echo "AWS_REGION=${{ secrets.AWS_REGION }}" >> .env
             echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
             echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
             echo "AWS_BUCKET_NAME=${{ secrets.AWS_BUCKET_NAME }}" >> .env
+            
             echo "WEBHOOK_URL=${{ secrets.WEBHOOK_URL }}" >> .env
+            
             echo "GERENCIANET_CERT_PATH=/certs/prod.p12" >> .env
-            echo "MODE=PROD" >> .env
-            echo "EXECUTE_ROUTINES=true" >> .env
+            echo "GERENCIANET_CLIENT_ID=${{ secrets.GERENCIANET_CLIENT_ID }}" >> .env
+            echo "GERENCIANET_CLIENT_SECRET=${{ secrets.GERENCIANET_CLIENT_SECRET }}" >> .env
+            echo "GERENCIANET_URL=${{ secrets.GERENCIANET_URL }}" >> .env
 
             docker compose up -d --build
           EOF
