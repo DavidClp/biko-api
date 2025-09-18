@@ -3,6 +3,7 @@ export interface ProviderResponseDTO {
   userId: string;
   name: string;
   services: string[];
+  servicesNames?: string[];
   description?: string;
   cityId?: string;
   cityName?: string;

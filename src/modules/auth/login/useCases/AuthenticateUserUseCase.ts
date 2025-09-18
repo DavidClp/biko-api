@@ -91,7 +91,7 @@ export class AuthenticateUserUseCase {
         provider: user.provider ? {
           id: user.provider.id,
           name: user.provider.name,
-          services: user.provider.service_provider.map(sp => sp.service.name),
+          services: user.provider.service_provider.map(sp => sp.service.id),
           city: user.provider.city?.name || undefined,
           status: user.provider.status
         } : undefined,

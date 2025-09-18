@@ -34,13 +34,54 @@ export class ProviderRepository implements IProviderRepository {
 
       return {
         ...provider,
-        services: provider.service_provider.map(sp => sp.service.name),
+        services: provider.service_provider.map(sp => sp.service.id),
+        servicesNames: provider.service_provider.map(sp => sp.service.name),
       } as ProviderResponseDTO;
     } catch (error) {
       throw new AppError({
         title: 'Erro ao criar provider',
         detail: 'Não foi possível criar o provider no banco de dados',
         origin: 'ProviderRepository.create',
+        statusCode: 500,
+      });
+    }
+  }
+
+  async update(id: string, data: UpdateProviderDTO): Promise<ProviderResponseDTO> {
+    try {
+      // Extrair services do data para não incluir no update do provider
+      const { services, ...providerData } = data;
+      
+      const provider = await database.provider.update({
+        where: { id },
+        data: {
+          ...providerData,
+          service_provider: services ? {
+            deleteMany: {},
+            create: services.map((service) => ({
+              service_id: service,
+            })),
+          } : undefined,
+        },
+        include: {
+          service_provider: {
+            include: {
+              service: true,
+            },
+          },
+        },
+      });
+
+      return {
+        ...provider,
+        services: provider.service_provider.map(sp => sp.service.id),
+        servicesNames: provider.service_provider.map(sp => sp.service.name),
+      } as ProviderResponseDTO;
+    } catch (error) {
+      throw new AppError({
+        title: 'Erro ao atualizar provider',
+        detail: 'Não foi possível atualizar o provider no banco de dados',
+        origin: 'ProviderRepository.update',
         statusCode: 500,
       });
     }
@@ -67,7 +108,8 @@ export class ProviderRepository implements IProviderRepository {
 
       const providerResponse = {
         ...provider,
-        services: provider.service_provider.map(sp => sp.service.name),
+        services: provider.service_provider.map(sp => sp.service.id),
+        servicesNames: provider.service_provider.map(sp => sp.service.name),
         cityName: provider.city?.name,
       } as ProviderResponseDTO;
 
@@ -143,7 +185,8 @@ export class ProviderRepository implements IProviderRepository {
         const providerResponse = {
           ...provider,
           cityName: provider?.city?.name,
-          services: provider?.service_provider?.map(sp => sp?.service.name),
+          services: provider?.service_provider?.map(sp => sp?.service.id),
+          servicesNames: provider?.service_provider?.map(sp => sp?.service.name),
         } as ProviderResponseDTO;
 
         delete (providerResponse as any)?.service_provider;
@@ -156,42 +199,6 @@ export class ProviderRepository implements IProviderRepository {
         title: 'Erro ao listar providers',
         detail: 'Não foi possível listar os providers no banco de dados',
         origin: 'ProviderRepository.findAll',
-        statusCode: 500,
-      });
-    }
-  }
-
-  async update(id: string, data: UpdateProviderDTO): Promise<ProviderResponseDTO> {
-    try {
-      const provider = await database.provider.update({
-        where: { id },
-        data: {
-          ...data,
-          service_provider: data?.services ? {
-            deleteMany: {},
-            create: data.services.map((service) => ({
-              service_id: service,
-            })),
-          } : undefined,
-        },
-        include: {
-          service_provider: {
-            include: {
-              service: true,
-            },
-          },
-        },
-      });
-
-      return {
-        ...provider,
-        services: provider.service_provider.map(sp => sp.service.name),
-      } as ProviderResponseDTO;
-    } catch (error) {
-      throw new AppError({
-        title: 'Erro ao atualizar provider',
-        detail: 'Não foi possível atualizar o provider no banco de dados',
-        origin: 'ProviderRepository.update',
         statusCode: 500,
       });
     }
@@ -240,7 +247,7 @@ export class ProviderRepository implements IProviderRepository {
 
       return providers.map(provider => ({
         ...provider,
-        services: provider.service_provider.map(sp => sp.service.name),
+        services: provider.service_provider.map(sp => sp.service.id),
       })) as ProviderResponseDTO[];
     } catch (error) {
       throw new AppError({
@@ -310,7 +317,7 @@ export class ProviderRepository implements IProviderRepository {
 
       return providers.map(provider => ({
         ...provider,
-        services: provider.service_provider.map(sp => sp.service.name),
+        services: provider.service_provider.map(sp => sp.service.id),
       })) as ProviderResponseDTO[];
     } catch (error) {
       throw new AppError({
