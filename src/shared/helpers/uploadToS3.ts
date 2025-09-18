@@ -1,5 +1,5 @@
 import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { s3 } from "./S3Client";
+import s3 from "./S3Client";
 
 export async function uploadToS3(file: Express.Multer.File, key: string) {
   const command = new PutObjectCommand({

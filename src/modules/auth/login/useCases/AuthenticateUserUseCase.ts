@@ -19,6 +19,7 @@ interface IAuthenticateUserResponse {
           services: string[];
           city?: string;
           status: string;
+          photoUrl: string;
         };
     client?: {
       id: string;
@@ -41,6 +42,7 @@ export class AuthenticateUserUseCase {
           select: {
             id: true,
             name: true,
+            photoUrl: true,
             service_provider: {
               select: {
                 service: true
@@ -93,7 +95,8 @@ export class AuthenticateUserUseCase {
           name: user.provider.name,
           services: user.provider.service_provider.map(sp => sp.service.id),
           city: user.provider.city?.name || undefined,
-          status: user.provider.status
+          status: user.provider.status,
+          photoUrl: user.provider.photoUrl || ''
         } : undefined,
         client: user.client ? {
           id: user.client.id,
