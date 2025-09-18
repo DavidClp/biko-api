@@ -101,6 +101,7 @@ export class ProviderRepository implements IProviderRepository {
               service: true,
             },
           },
+          provider_review: true,
         },
       });
 
@@ -108,9 +109,11 @@ export class ProviderRepository implements IProviderRepository {
 
       const providerResponse = {
         ...provider,
-        services: provider.service_provider.map(sp => sp.service.id),
-        servicesNames: provider.service_provider.map(sp => sp.service.name),
-        cityName: provider.city?.name,
+        services: provider?.service_provider?.map(sp => sp.service.id),
+        servicesNames: provider?.service_provider?.map(sp => sp.service.name),
+        cityName: provider?.city?.name,
+        reviews: provider?.provider_review?.length,
+        rating: provider?.provider_review?.reduce((acc, review) => acc + review?.stars, 0) / provider?.provider_review?.length,
       } as ProviderResponseDTO;
 
       delete (providerResponse as any)?.service_provider;

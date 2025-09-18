@@ -62,6 +62,18 @@ model Provider {
   service_provider service_provider[]
   transactions     transactions[]
   subscriptions    subscriptions?     @relation(fields: [subscription_id], references: [id])
+  provider_review  provider_reviews[]
+}
+
+model provider_reviews {
+  id          String   @id @default(uuid())
+  provider_id String   @db.Uuid
+  review      String?
+  stars       Int
+  status      String @default("PENDING")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  provider    Provider @relation(fields: [provider_id], references: [id], onDelete: Cascade)
 }
 
 model service_provider {

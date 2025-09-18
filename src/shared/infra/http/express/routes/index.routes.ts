@@ -1,4 +1,5 @@
 import { providerRoutes } from '@/modules/providers/routes/provider.routes';
+import { providerReviewRoutes } from '@/modules/providers/routes/provider-review.routes';
 import { clientRoutes } from '@/modules/clients/routes/client.routes';
 import { authRoutes } from '@/modules/auth/login/routes/auth.routes';
 import { cityRoutes } from '@/modules/cities/routes/city.routes';
@@ -18,6 +19,8 @@ const routes = Router();
 routes.use('/auth', authRoutes);
 
 routes.use('/providers', providerRoutes);
+
+routes.use('/provider-reviews', providerReviewRoutes);
 
 routes.use('/clients', clientRoutes);
 
