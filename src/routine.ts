@@ -23,6 +23,7 @@ export class RoutineTrigger {
   private static async executeImportSubscriptions(): Promise<void> {
     while (this.CAN_EXECUTE) {
       try {
+        console.log("EXECUTING ROUTINE: 'executeImportSubscriptions'");
         await this.importSubscriptionsUseCase.execute();
       } catch (err) {
         console.log("ERROR ROUTINE: 'executeImportSubscriptions' =>", err);
@@ -35,6 +36,7 @@ export class RoutineTrigger {
   private static async executeImportTransactions(): Promise<void> {
     while (this.CAN_EXECUTE) {
       try {
+        console.log("EXECUTING ROUTINE: 'executeImportTransactions'");
         await this.importTransactionsUseCase.execute();
       } catch (err) {
         console.log("ERROR ROUTINE: 'executeImportTransactions' =>", err);
