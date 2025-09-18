@@ -6,6 +6,7 @@ import cors from "cors";
 import { Server } from 'socket.io'
 import { database } from "../../database";
 import { setupWebSocket } from "./websocket";
+import { RoutineTrigger } from "@/routine";
 
 
 export const notifications_in_progress: { [key: string]: boolean } = {};
@@ -17,6 +18,8 @@ app.use(cors());
 app.use(express.json({ limit: '200mb' }));
 
 app.use(routes);
+
+RoutineTrigger.execute();
 
 app.use((err: unknown, req: Request, res: Response, _: NextFunction) => {
     console.error('ERRO CAPTURADO:', err);
