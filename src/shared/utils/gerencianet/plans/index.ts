@@ -8,7 +8,7 @@ export const cratePlanInGerecianet = async (data: ICreatePlanDTO) => {
     const { name, recurrence, frequency } = data
 
     try {
-        const result = await gerencianet.createPlan({}, { name, repeats: recurrence, interval: frequency })
+        const result = await gerencianet.createPlan({}, { name, repeats: null/* recurrence */, interval: frequency })
         return result
     } catch (err) {
         console.log(err)

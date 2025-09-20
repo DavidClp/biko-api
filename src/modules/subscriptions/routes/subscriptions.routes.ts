@@ -7,7 +7,7 @@ import { CancelSubscriptionController } from "../use-cases/cancel-subscription/C
 const subscriptionsRouter = Router();
 
 subscriptionsRouter.post('/', userAuthenticatedMiddleware(), CreateOrUpdateSubscriptionController);
-subscriptionsRouter.get('/', GetSubscriptionOfBusinessControler);
+subscriptionsRouter.get('/',  userAuthenticatedMiddleware(), GetSubscriptionOfBusinessControler);
 subscriptionsRouter.post('/cancel/:subscription_id', userAuthenticatedMiddleware(), CancelSubscriptionController);
 
 export { subscriptionsRouter }

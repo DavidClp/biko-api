@@ -55,8 +55,7 @@ export const getSubscriptionOfBusinessService = async (props: IGetSubscriptionOf
     try {
         subscription_situation = await validateSubscriptionUseCase({ provider })
     } catch (err) {
-        //@ts-ignore
-        if (err instanceof AppError) subscription_situation = correctSituations[err.field as string]
+        if (err instanceof AppError) subscription_situation = correctSituations[err?.error?.field as unknown as string]
         else throw err
     }
 

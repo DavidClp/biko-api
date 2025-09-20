@@ -14,6 +14,7 @@ export class ProviderRepository implements IProviderRepository {
           cityId: data.city,
           phone: data.phone,
           socialLinks: data.socialLinks,
+          is_listed: false,
           photoUrl: data.photoUrl,
           service_provider: {
             createMany: {
