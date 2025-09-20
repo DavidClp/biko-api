@@ -52,6 +52,8 @@ routes.use('/ping', async (req: Request, res: Response) => {
 });
 
 routes.post("/gerencianet/webhook", async (req: Request, res: Response) => {
+  console.log("GERENCIANET WEBHOOK", req.query)
+  
   let { subscription_gateway_id, transaction_gateway_id }: any = req.query
   transaction_gateway_id = req?.body?.pix?.txid ? req?.body?.pix?.txid : transaction_gateway_id
   transaction_gateway_id = req?.body?.pix?.[0].txid ? req?.body?.pix?.[0].txid : transaction_gateway_id

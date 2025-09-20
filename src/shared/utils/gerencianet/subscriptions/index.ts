@@ -53,7 +53,7 @@ export const createSubscriptionInGerencianet = async (data: ICreateSubscriptionI
 
 
         /// criar rota
-        const notification_url = `${process.env.WEBHOOK_URL}/gerencianet/webhook?subscription_gateway_id=${result?.data?.subscription_id}`
+        const notification_url = `${process.env.WEBHOOK_URL}gerencianet/webhook?subscription_gateway_id=${result?.data?.subscription_id}`
 
         await gerencianet.updateSubscriptionMetadata({ id: result?.data?.subscription_id }, { notification_url })
 

@@ -16,7 +16,7 @@ export const createCreditCardChargeIInGerencianet = async (data: ICreateCreditCa
         items: [{ name: "Compra de créditos", value, amount: 1 }]
     })
 
-    const notification_url = `${process.env.WEBHOOK_URL}/gerencianet/webhook?transaction_gateway_id=${result?.data?.charge_id}`
+    const notification_url = `${process.env.WEBHOOK_URL}gerencianet/webhook?transaction_gateway_id=${result?.data?.charge_id}`
 
     await gerencianet.updateChargeMetadata({ id: result?.data?.charge_id }, { notification_url })
 

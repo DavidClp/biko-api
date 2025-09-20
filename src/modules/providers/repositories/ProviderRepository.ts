@@ -169,6 +169,7 @@ export class ProviderRepository implements IProviderRepository {
               service: true,
             },
           },
+          provider_review: true,
         },
         where: {
           cityId,
@@ -191,10 +192,13 @@ export class ProviderRepository implements IProviderRepository {
           cityName: provider?.city?.name,
           services: provider?.service_provider?.map(sp => sp?.service.id),
           servicesNames: provider?.service_provider?.map(sp => sp?.service.name),
+          reviews: provider?.provider_review?.length,
+          rating: provider?.provider_review?.reduce((acc, review) => acc + review?.stars, 0) / provider?.provider_review?.length,
         } as ProviderResponseDTO;
 
         delete (providerResponse as any)?.service_provider;
         delete (providerResponse as any)?.city;
+        delete (providerResponse as any)?.provider_review;
 
         return providerResponse;
       }) as ProviderResponseDTO[];
