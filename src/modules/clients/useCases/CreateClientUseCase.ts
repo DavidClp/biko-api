@@ -19,7 +19,7 @@ export class CreateClientUseCase {
     const password = await hash(data.password, 10);
 
     const user = await this.sharedRepository.createUser({
-      email: data.email,
+      email: data?.email?.toLowerCase()?.trim(),
       password: password,
       role: Role.CLIENT,
     })

@@ -15,7 +15,7 @@ export class AuthenticateUserController {
       }
 
       const result = await this.authenticateUserUseCase.execute({
-        email,
+        email: email?.toLowerCase()?.trim(),
         password
       });
 
