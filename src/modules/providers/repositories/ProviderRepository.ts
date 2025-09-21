@@ -10,6 +10,7 @@ export class ProviderRepository implements IProviderRepository {
         data: {
           userId: data.userId,
           name: data.name,
+          business_name: data.business_name,
           description: data.description,
           cityId: data.city,
           phone: data.phone,
@@ -36,6 +37,7 @@ export class ProviderRepository implements IProviderRepository {
       return {
         ...provider,
         services: provider.service_provider.map(sp => sp.service.id),
+        subscription_situation: '',
         servicesNames: provider.service_provider.map(sp => sp.service.name),
       } as ProviderResponseDTO;
     } catch (error) {
@@ -75,6 +77,7 @@ export class ProviderRepository implements IProviderRepository {
 
       return {
         ...provider,
+        subscription_situation: '',
         services: provider.service_provider.map(sp => sp.service.id),
         servicesNames: provider.service_provider.map(sp => sp.service.name),
       } as ProviderResponseDTO;
@@ -113,6 +116,7 @@ export class ProviderRepository implements IProviderRepository {
         services: provider?.service_provider?.map(sp => sp.service.id),
         servicesNames: provider?.service_provider?.map(sp => sp.service.name),
         cityName: provider?.city?.name,
+        subscription_situation: '',
         reviews: provider?.provider_review?.length,
         rating: provider?.provider_review?.reduce((acc, review) => acc + review?.stars, 0) / provider?.provider_review?.length,
       } as ProviderResponseDTO;
@@ -192,6 +196,7 @@ export class ProviderRepository implements IProviderRepository {
           cityName: provider?.city?.name,
           services: provider?.service_provider?.map(sp => sp?.service.id),
           servicesNames: provider?.service_provider?.map(sp => sp?.service.name),
+          subscription_situation: '',
           reviews: provider?.provider_review?.length,
           rating: provider?.provider_review?.reduce((acc, review) => acc + review?.stars, 0) / provider?.provider_review?.length,
         } as ProviderResponseDTO;
@@ -255,6 +260,7 @@ export class ProviderRepository implements IProviderRepository {
 
       return providers.map(provider => ({
         ...provider,
+        subscription_situation: '',
         services: provider.service_provider.map(sp => sp.service.id),
       })) as ProviderResponseDTO[];
     } catch (error) {
@@ -288,6 +294,7 @@ export class ProviderRepository implements IProviderRepository {
 
       return providers.map(provider => ({
         ...provider,
+        subscription_situation: '',
         services: [], // Será preenchido se necessário
       })) as ProviderResponseDTO[];
     } catch (error) {
@@ -326,6 +333,7 @@ export class ProviderRepository implements IProviderRepository {
       return providers.map(provider => ({
         ...provider,
         services: provider.service_provider.map(sp => sp.service.id),
+        subscription_situation: '',
       })) as ProviderResponseDTO[];
     } catch (error) {
       throw new AppError({
