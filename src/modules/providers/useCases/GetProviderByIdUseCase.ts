@@ -1,6 +1,8 @@
 import { IProviderRepository } from '../repositories';
 import { ProviderResponseDTO } from '../dtos';
 import AppError from '../../../shared/errors/AppError';
+import { validateSubscriptionUseCase } from '@/modules/subscriptions-transactions-gerencianet/validateSubscription.service';
+import { correctSituations } from '@/shared/utils/correctSituations';
 
 export class GetProviderByIdUseCase {
   constructor(private providerRepository: IProviderRepository) {}
@@ -16,6 +18,17 @@ export class GetProviderByIdUseCase {
     }
 
     const provider = await this.providerRepository.findById(providerId);
+
+    let subscription_situation: any = ""
+
+    try {
+      subscription_situation = await validateSubscriptionUseCase({ provider: provider })
+      console.log("subscription_situation",subscription_situation)
+    } catch (err) {
+      if (err instanceof AppError) subscription_situation = correctSituations[err?.error?.field as unknown as string]
+      else throw err
+    }
+
     
     if (!provider) {
       throw new AppError({
@@ -26,6 +39,9 @@ export class GetProviderByIdUseCase {
       });
     }
 
-    return provider;
+    return {
+      ...provider,
+      subscription_situation
+    };
   }
 }

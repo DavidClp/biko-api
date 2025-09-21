@@ -14,4 +14,5 @@ export interface ProviderResponseDTO {
   createdAt: Date;
   updatedAt: Date;
   subscription_id?: string;
+  subscription_situation: string
 }

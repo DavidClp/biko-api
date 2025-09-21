@@ -23,6 +23,7 @@ interface IAuthenticateUserResponse {
       city?: string;
       status: string;
       photoUrl: string;
+      is_listed: boolean;
       subscription_situation: string;
       subscription_id: string;
     };
@@ -48,6 +49,7 @@ export class AuthenticateUserUseCase {
             id: true,
             name: true,
             photoUrl: true,
+            is_listed: true,
             service_provider: {
               select: {
                 service: true
@@ -111,6 +113,7 @@ export class AuthenticateUserUseCase {
         createdAt: user.createdAt,
         provider: user.provider ? {
           id: user.provider.id,
+          is_listed: user.provider.is_listed,
           subscription_situation: subscription_situation,
           subscription_id: user.provider?.subscriptions?.id || '',
           name: user.provider.name,
