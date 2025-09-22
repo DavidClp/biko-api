@@ -260,20 +260,16 @@ export class ChatController {
         }
     }
 
-    // Marcar mensagens como visualizadas
     async handleMarkAsViewed({ messageIds, requestId }: {
         messageIds: string[],
         requestId: string
     }) {
         try {
-            console.log(`📥 [${requestId}] Recebido evento para marcar ${messageIds?.length || 0} mensagens como visualizadas`);
-
             if (!messageIds?.length) {
                 console.log("⚠️ - Nenhuma mensagem para marcar como visualizada");
                 return;
             }
 
-            // Atualizar mensagens como visualizadas
             const result = await database.message.updateMany({
                 where: {
                     id: { in: messageIds },
