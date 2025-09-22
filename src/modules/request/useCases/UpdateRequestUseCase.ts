@@ -8,27 +8,23 @@ export class UpdateRequestUseCase {
   ) { }
 
   async execute(id: string, data: UpdateRequestDTO): Promise<RequestResponseDTO> {
-    await this.validateRequestExists(id);
-    await this.validateData(data);
+    this.validateData(data);
 
-    const request = await this.requestRepository.update(id, data);
+    let value = data?.value;
+
+    if (data?.status === "ACCEPTED" && data?.budgetStatus === "ACCEPTED") {
+      value = data?.budget;
+    }
+
+    const request = await this.requestRepository.update(id, {
+      ...data,
+      value,
+    });
 
     return request;
   }
 
-  private async validateRequestExists(id: string): Promise<void> {
-    const existingRequest = await this.requestRepository.findById(id);
-    if (!existingRequest) {
-      throw new AppError({
-        title: 'Request não encontrado',
-        detail: 'Não foi possível encontrar o request especificado',
-        origin: 'UpdateRequestUseCase.execute',
-        statusCode: 404,
-      });
-    }
-  }
-
-  private async validateData(data: UpdateRequestDTO): Promise<void> {
+  private validateData(data: UpdateRequestDTO): void {
     if (data.value && data.value.lessThan(0)) {
       throw new AppError({
         title: 'Valor inválido',
