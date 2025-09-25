@@ -13,6 +13,7 @@ import { importSubscriptionOfGerencianetService } from '@/modules/subscriptions-
 import { plansRoutes } from '@/modules/plans/infra/http/express/routes';
 import { subscriptionsRouter } from '@/modules/subscriptions/routes/subscriptions.routes';
 import { transactionsRouter } from '@/modules/transactions/routes/transactions.routes';
+import { logRoutes } from '@/modules/logs/routes';
 
 const routes = Router();
 
@@ -40,15 +41,13 @@ routes.use('/subscriptions', subscriptionsRouter);
 
 routes.use('/transactions', transactionsRouter);
 
+routes.use('/logs', logRoutes);
+
 //routes.use(sharedRoutes);
 //routes.use('/properties', propertiesRoutes);
 
 routes.use('/ping', async (req: Request, res: Response) => {
-  //return res.json('PONG - V.0.1.1')
-  return res.json({
-    message: 'PONG - V.0.1.2',
-    envs: process.env,
-  })
+  return res.json('PONG - V.0.2')
 });
 
 routes.post("/gerencianet/webhook", async (req: Request, res: Response) => {
