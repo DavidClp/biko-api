@@ -2,6 +2,7 @@
 import { serverHttp } from "./app";
 import { database } from "../../database";
 import 'dotenv/config';
+import { logger } from "@/shared/utils/logger";
 
 const port = process.env.PORT || 3000;
 
@@ -11,7 +12,7 @@ async function testDatabaseConnection() {
         console.log('✅🎲 - CONEXÃO COM BANCO DE DADOS ESTABELECIDA COM SUCESSO');
         return true;
     } catch (error) {
-        console.error('❌ - ERRO AO CONECTAR COM BANCO DE DADOS:', error);
+        logger.error('ERRO AO CONECTAR COM BANCO DE DADOS:', error);
         return false;
     }
 }
@@ -24,7 +25,7 @@ async function startServer() {
             console.log(`\n🚀 - SERVIDOR RODANDO NA PORTA ${port}`);
         });
     } else {
-        console.error('❌ - SERVIDOR NÃO PODE INICIAR - PROBLEMA NO BANCO DE DADOS');
+        logger.error('SERVIDOR NÃO PODE INICIAR - PROBLEMA NO BANCO DE DADOS');
         process.exit(1);
     }
 }
