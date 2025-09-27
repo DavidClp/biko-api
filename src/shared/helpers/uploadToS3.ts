@@ -7,6 +7,8 @@ export async function uploadToS3(file: Express.Multer.File, key: string) {
     Key: key,
     Body: file.buffer,
     ContentType: file.mimetype,
+    ACL: 'public-read',
+    CacheControl: 'public, max-age=31536000',
   });
 
   await s3.send(command);

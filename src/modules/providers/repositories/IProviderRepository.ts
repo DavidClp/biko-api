@@ -1,4 +1,4 @@
-import { CreateProviderDTO, UpdateProviderDTO, ProviderResponseDTO } from '../dtos';
+import { CreateProviderDTO, UpdateProviderDTO, ProviderResponseDTO, ProviderResponseCompleteDTO } from '../dtos';
 
 export interface IGetListProvidersDTO {
   cityId: string;
@@ -9,6 +9,7 @@ export interface IGetListProvidersDTO {
 export interface IProviderRepository {
   create(data: CreateProviderDTO): Promise<ProviderResponseDTO>;
   findById(id: string): Promise<ProviderResponseDTO | null>;
+  findByIdComplete(id: string): Promise<ProviderResponseCompleteDTO | null>;
   findByUserId(userId: string): Promise<ProviderResponseDTO | null>;
   findAll(data: IGetListProvidersDTO): Promise<ProviderResponseDTO[]>;
   update(id: string, data: UpdateProviderDTO): Promise<ProviderResponseDTO>;

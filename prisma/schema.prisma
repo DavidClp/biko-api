@@ -64,6 +64,18 @@ model Provider {
   transactions     transactions[]
   subscriptions    subscriptions?     @relation(fields: [subscription_id], references: [id])
   provider_review  provider_reviews[]
+  photos           ProviderPhotos[]
+}
+
+model ProviderPhotos {
+  id          String   @id @default(uuid())
+  provider_id String   @db.Uuid
+  photo_url   String
+  description String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  provider    Provider @relation(fields: [provider_id], references: [id], onDelete: Cascade)
 }
 
 model provider_reviews {

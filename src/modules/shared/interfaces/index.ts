@@ -34,7 +34,7 @@ export interface subscriptionsAttributes {
     next_execution: string
     next_expire_at: string
     credit_card_id: string
-    plan?: plansAttributes
+    plans?: plansAttributes
     transactions?: transactionsAttributes[]
     provider?: IProviderResponseDTO
     credit_card?: creditCardsAttributes

@@ -1,6 +1,6 @@
 import { database } from '../../../shared/infra/database';
 import { IGetListProvidersDTO, IProviderRepository } from './IProviderRepository';
-import { CreateProviderDTO, UpdateProviderDTO, ProviderResponseDTO } from '../dtos';
+import { CreateProviderDTO, UpdateProviderDTO, ProviderResponseDTO, ProviderResponseCompleteDTO } from '../dtos';
 import AppError from '../../../shared/errors/AppError';
 
 export class ProviderRepository implements IProviderRepository {
@@ -120,6 +120,56 @@ export class ProviderRepository implements IProviderRepository {
         reviews: provider?.provider_review?.length,
         rating: provider?.provider_review?.reduce((acc, review) => acc + review?.stars, 0) / provider?.provider_review?.length,
       } as ProviderResponseDTO;
+
+      delete (providerResponse as any)?.service_provider;
+      delete (providerResponse as any)?.city;
+
+      return providerResponse;
+    } catch (error) {
+      throw new AppError({
+        title: 'Erro ao buscar provider',
+        detail: 'Não foi possível buscar o provider no banco de dados',
+        origin: 'ProviderRepository.findById',
+        statusCode: 500,
+      });
+    }
+  }
+
+  async findByIdComplete(id: string): Promise<ProviderResponseCompleteDTO | null> {
+    try {
+      const provider = await database.provider.findUnique({
+        where: { 
+          id,
+          deletedAt: null,
+        },
+        include: {
+          city: true,
+          service_provider: {
+            include: {
+              service: true,
+            },
+          },
+          provider_review: true,
+          subscriptions: {
+            include: {
+              plans: true
+            }
+          }
+        },
+      });
+
+      if (!provider) return null;
+
+      const providerResponse = {
+        ...provider,
+        services: provider?.service_provider?.map(sp => sp.service.id),
+        servicesNames: provider?.service_provider?.map(sp => sp.service.name),
+        cityName: provider?.city?.name,
+        subscription_situation: '',
+        reviews: provider?.provider_review?.length,
+        rating: provider?.provider_review?.reduce((acc, review) => acc + review?.stars, 0) / provider?.provider_review?.length,
+        subscription: provider?.subscriptions,
+      } as any;
 
       delete (providerResponse as any)?.service_provider;
       delete (providerResponse as any)?.city;

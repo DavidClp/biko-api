@@ -1,5 +1,6 @@
 import { providerRoutes } from '@/modules/providers/routes/provider.routes';
 import { providerReviewRoutes } from '@/modules/providers/routes/provider-review.routes';
+import { providerPhotoRoutes } from '@/modules/provider-photos/routes/provider-photo.routes';
 import { clientRoutes } from '@/modules/clients/routes/client.routes';
 import { authRoutes } from '@/modules/auth/login/routes/auth.routes';
 import { cityRoutes } from '@/modules/cities/routes/city.routes';
@@ -22,6 +23,8 @@ routes.use('/auth', authRoutes);
 routes.use('/providers', providerRoutes);
 
 routes.use('/provider-reviews', providerReviewRoutes);
+
+routes.use('/provider-photos', providerPhotoRoutes);
 
 routes.use('/clients', clientRoutes);
 
