@@ -65,6 +65,7 @@ model Provider {
   subscriptions    subscriptions?     @relation(fields: [subscription_id], references: [id])
   provider_review  provider_reviews[]
   photos           ProviderPhotos[]
+  metrics          ProviderMetrics[]
 }
 
 model ProviderPhotos {
@@ -222,6 +223,19 @@ model subscriptions {
   transactions        transactions[]
 }
 
+model ProviderMetrics {
+  id          BigInt   @id @default(autoincrement()) 
+  provider_id String   @db.Uuid
+  metric_type MetricType
+  count       Int      @default(1)
+  date        DateTime @default(now())
+  metadata    Json?
+  provider    Provider @relation(fields: [provider_id], references: [id], onDelete: Cascade)
+  
+  @@index([provider_id, metric_type, date])
+  @@index([date])
+}
+
 enum Role {
   CLIENT
   PROVIDER
@@ -259,4 +273,9 @@ enum MessageType {
   PROPOSAL_ACCEPTED
   PROPOSAL_CANCELLED
   PROPOSAL_REJECTED
+}
+
+enum MetricType {
+  SEARCH_APPEARANCE
+  PROFILE_VIEW
 }

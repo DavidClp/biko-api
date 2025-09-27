@@ -11,6 +11,8 @@ import { CreateProviderDTO, UpdateProviderDTO } from '../dtos';
 import AppError from '../../../shared/errors/AppError';
 import { SharedRepository } from '@/modules/shared/repositories/SharedRepository';
 import { UpdateImgProfileUseCase } from '../useCases/UpdateImgProfileUseCase';
+import { CreateProviderMetricUseCase } from '../../provider-metrics/useCases/CreateProviderMetricUseCase';
+import { ProviderMetricsRepository } from '../../provider-metrics/repositories/ProviderMetricsRepository';
 
 export class ProviderController {
   private createProviderUseCase: CreateProviderUseCase;
@@ -19,10 +21,12 @@ export class ProviderController {
   private updateImgProfileUseCase: UpdateImgProfileUseCase;
   private updateProviderUseCase: UpdateProviderUseCase;
   private deleteProviderUseCase: DeleteProviderUseCase;
+  private createProviderMetricUseCase: CreateProviderMetricUseCase;
 
   constructor() {
     const providerRepository = new ProviderRepository();
     const sharedRepository = new SharedRepository();
+    const providerMetricsRepository = new ProviderMetricsRepository();
 
     this.createProviderUseCase = new CreateProviderUseCase(providerRepository, sharedRepository);
     this.getProviderByIdUseCase = new GetProviderByIdUseCase(providerRepository);
@@ -30,6 +34,7 @@ export class ProviderController {
     this.updateProviderUseCase = new UpdateProviderUseCase(providerRepository);
     this.updateImgProfileUseCase = new UpdateImgProfileUseCase(providerRepository);
     this.deleteProviderUseCase = new DeleteProviderUseCase(providerRepository);
+    this.createProviderMetricUseCase = new CreateProviderMetricUseCase(providerMetricsRepository);
   }
 
   async create(req: Request, res: Response): Promise<Response> {
@@ -45,7 +50,23 @@ export class ProviderController {
 
   async getById(req: Request, res: Response): Promise<Response> {
     const { providerId } = req.params;
+    const { cityId, q: query, services } = req.query;
+    const servicesArray = services ? services.toString().split(',') : [];
+    
     const provider = await this.getProviderByIdUseCase.execute(providerId);
+
+    // Registrar visualização do perfil (assíncrono, não bloqueia a resposta)
+    this.createProviderMetricUseCase.execute({
+      provider_id: providerId,
+      metric_type: 'PROFILE_VIEW',
+        metadata: {
+          query: query as string,
+          city_id: cityId as string,
+          services: servicesArray?.length > 0 ? servicesArray : undefined,
+        },
+    }).catch(error => {
+      console.error('Erro ao registrar visualização do perfil:', error);
+    });
 
     return res.status(200).json({
       success: true,
@@ -63,6 +84,27 @@ export class ProviderController {
       query: query as string,
       services: servicesArray as string[],
     });
+
+    // Registrar aparições na busca para cada provider (assíncrono, não bloqueia a resposta)
+    if (providers.length > 0) {
+      const metricsPromises = providers.map(provider => 
+        this.createProviderMetricUseCase.execute({
+          provider_id: provider.id,
+          metric_type: 'SEARCH_APPEARANCE',
+          metadata: {
+            query: query as string,
+            city_id: cityId as string,
+            services: servicesArray?.length > 0 ? servicesArray : undefined,
+          },
+        }).catch(error => {
+          console.error(`Erro ao registrar aparição na busca para provider ${provider.id}:`, error);
+        })
+      );
+      
+      Promise.all(metricsPromises).catch(error => {
+        console.error('Erro ao registrar métricas de busca:', error);
+      });
+    }
 
     return res.status(200).json({
       success: true,
