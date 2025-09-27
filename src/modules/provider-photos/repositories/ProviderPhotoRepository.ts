@@ -38,7 +38,7 @@ export class ProviderPhotoRepository implements IProviderPhotoRepository {
   }
 
   async list(data: IListProviderPhotosDTO) {
-    const skip = (data.page - 1) * data.limit;
+    const skip = ((data?.page || 1) - 1) * (data?.limit || 10);
     
     const [photos, total] = await Promise.all([
       database.providerPhotos.findMany({
@@ -52,7 +52,7 @@ export class ProviderPhotoRepository implements IProviderPhotoRepository {
       }),
     ]);
 
-    const totalPages = Math.ceil(total / data.limit);
+    const totalPages = Math.ceil(total / (data?.limit || 10));
 
     return {
       data: photos,
