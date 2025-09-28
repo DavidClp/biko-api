@@ -17,6 +17,7 @@ export interface ProviderResponseDTO {
   updatedAt: Date;
   subscription_id?: string;
   subscription_situation: string
+  cityIdList?: string[];
 }
 export interface ProviderResponseCompleteDTO {
   id: string;

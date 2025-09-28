@@ -41,21 +41,22 @@ model Client {
 }
 
 model Provider {
-  id          String         @id @default(uuid()) @db.Uuid
-  userId      String         @unique
-  name        String
-  business_name String?
-  description String?
-  cityId      String?
-  phone       String?
-  socialLinks Json?
-  photoUrl    String?
-  is_listed   Boolean        @default(true)
-  status      ProviderStatus @default(PENDING)
-  createdAt   DateTime       @default(now())
-  deletedAt   DateTime?
-  updatedAt   DateTime       @updatedAt
-  subscription_id  String?            @db.Uuid
+  id              String         @id @default(uuid()) @db.Uuid
+  userId          String         @unique
+  name            String
+  business_name   String?
+  description     String?
+  cityId          String?
+  isAllCities     Boolean        @default(false)
+  phone           String?
+  socialLinks     Json?
+  photoUrl        String?
+  is_listed       Boolean        @default(true)
+  status          ProviderStatus @default(PENDING)
+  createdAt       DateTime       @default(now())
+  deletedAt       DateTime?
+  updatedAt       DateTime       @updatedAt
+  subscription_id String?        @db.Uuid
 
   user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   requests         Request[]
@@ -66,6 +67,7 @@ model Provider {
   provider_review  provider_reviews[]
   photos           ProviderPhotos[]
   metrics          ProviderMetrics[]
+  city_provider    city_provider[]
 }
 
 model ProviderPhotos {
@@ -84,7 +86,7 @@ model provider_reviews {
   provider_id String   @db.Uuid
   review      String?
   stars       Int
-  status      String @default("PENDING")
+  status      String   @default("PENDING")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   provider    Provider @relation(fields: [provider_id], references: [id], onDelete: Cascade)
@@ -97,6 +99,16 @@ model service_provider {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   service     service  @relation(fields: [service_id], references: [id])
+  provider    Provider @relation(fields: [provider_id], references: [id], onDelete: Cascade)
+}
+
+model city_provider {
+  id          String   @id @default(uuid())
+  provider_id String   @db.Uuid
+  city_id     String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  city        cities   @relation(fields: [city_id], references: [id])
   provider    Provider @relation(fields: [provider_id], references: [id], onDelete: Cascade)
 }
 
@@ -144,14 +156,15 @@ model Message {
 }
 
 model cities {
-  id              String     @id
+  id              String          @id
   name            String?
   state_id        String
-  createdAt       DateTime   @default(now())
+  createdAt       DateTime        @default(now())
   updatedAt       DateTime
   name_no_accents String?
-  state           state      @relation(fields: [state_id], references: [id])
+  state           state           @relation(fields: [state_id], references: [id])
   Provider        Provider[]
+  city_provider   city_provider[]
 }
 
 model state {
@@ -165,43 +178,43 @@ model state {
 }
 
 model plans {
-  id                             String          @id @default(uuid()) @db.Uuid
-  name                           String
-  description                    String
-  icon                           String
-  active                         Boolean         @default(false)
-  value                          Decimal         @db.Decimal(10, 2)
-  frequency                      Int             @default(1)
-  recurrence                     Int?
-  permissions                    Json            @default("[]")
-  is_test_free                   Boolean         @default(false)
-  createdAt                      DateTime        @default(now())
-  updatedAt                      DateTime        @updatedAt
-  gateway_id                     Int?
-  subscriptions                  subscriptions[]
+  id            String          @id @default(uuid()) @db.Uuid
+  name          String
+  description   String
+  icon          String
+  active        Boolean         @default(false)
+  value         Decimal         @db.Decimal(10, 2)
+  frequency     Int             @default(1)
+  recurrence    Int?
+  permissions   Json            @default("[]")
+  is_test_free  Boolean         @default(false)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  gateway_id    Int?
+  subscriptions subscriptions[]
 }
 
 model transactions {
-  id                      String         @id @default(uuid()) @db.Uuid
-  friendly_id             String?        @db.VarChar(255)
-  query_id                String?        @db.Uuid
-  contract_id             String?        @db.Uuid
-  method                  String         @db.VarChar(255)
-  card_flag               String         @default("N/A") @db.VarChar(255)
-  card_mask               String         @default("N/A") @db.VarChar(255)
-  type                    String         @db.VarChar(255)
-  status                  String         @db.VarChar(255)
-  value                   Decimal        @db.Decimal(10, 2)
-  description             String         @db.VarChar(255)
-  provider_id             String?        @db.Uuid
-  subscription_id         String?        @db.Uuid
-  createdAt               DateTime       @default(now())
-  updatedAt               DateTime       @updatedAt
-  credit_card_id          String?        @db.Uuid
-  gateway_id              Int?
-  data_payment            DateTime?
-  provider                Provider?      @relation(fields: [provider_id], references: [id])
-  subscriptions           subscriptions? @relation(fields: [subscription_id], references: [id])
+  id              String         @id @default(uuid()) @db.Uuid
+  friendly_id     String?        @db.VarChar(255)
+  query_id        String?        @db.Uuid
+  contract_id     String?        @db.Uuid
+  method          String         @db.VarChar(255)
+  card_flag       String         @default("N/A") @db.VarChar(255)
+  card_mask       String         @default("N/A") @db.VarChar(255)
+  type            String         @db.VarChar(255)
+  status          String         @db.VarChar(255)
+  value           Decimal        @db.Decimal(10, 2)
+  description     String         @db.VarChar(255)
+  provider_id     String?        @db.Uuid
+  subscription_id String?        @db.Uuid
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  credit_card_id  String?        @db.Uuid
+  gateway_id      Int?
+  data_payment    DateTime?
+  provider        Provider?      @relation(fields: [provider_id], references: [id])
+  subscriptions   subscriptions? @relation(fields: [subscription_id], references: [id])
 }
 
 model subscriptions {
@@ -224,14 +237,14 @@ model subscriptions {
 }
 
 model ProviderMetrics {
-  id          BigInt   @id @default(autoincrement()) 
-  provider_id String   @db.Uuid
+  id          BigInt     @id @default(autoincrement())
+  provider_id String     @db.Uuid
   metric_type MetricType
-  count       Int      @default(1)
-  date        DateTime @default(now())
+  count       Int        @default(1)
+  date        DateTime   @default(now())
   metadata    Json?
-  provider    Provider @relation(fields: [provider_id], references: [id], onDelete: Cascade)
-  
+  provider    Provider   @relation(fields: [provider_id], references: [id], onDelete: Cascade)
+
   @@index([provider_id, metric_type, date])
   @@index([date])
 }

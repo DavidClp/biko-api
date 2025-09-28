@@ -24,6 +24,11 @@ export class ProviderRepository implements IProviderRepository {
               })),
             },
           },
+          city_provider: {
+            create: {
+              city_id: data.city,
+            },
+          },
         },
         include: {
           service_provider: {
@@ -53,7 +58,7 @@ export class ProviderRepository implements IProviderRepository {
   async update(id: string, data: UpdateProviderDTO): Promise<ProviderResponseDTO> {
     try {
       // Extrair services do data para não incluir no update do provider
-      const { services, ...providerData } = data;
+      const { services, cityIdList, ...providerData } = data;
 
       const provider = await database.provider.update({
         where: { id },
@@ -65,11 +70,22 @@ export class ProviderRepository implements IProviderRepository {
               service_id: service,
             })),
           } : undefined,
+          city_provider: cityIdList && cityIdList.length > 0 ? {
+            deleteMany: {},
+            create:   cityIdList.map((city) => ({
+              city_id: city,
+            })),
+          } : undefined,
         },
         include: {
           service_provider: {
             include: {
               service: true,
+            },
+          },
+          city_provider: {
+            include: {
+              city: true,
             },
           },
         },
@@ -80,6 +96,7 @@ export class ProviderRepository implements IProviderRepository {
         subscription_situation: '',
         services: provider.service_provider.map(sp => sp.service.id),
         servicesNames: provider.service_provider.map(sp => sp.service.name),
+       // cityName: provider.city_provider.map(cp => cp.city.name),
       } as ProviderResponseDTO;
     } catch (error) {
       throw new AppError({
@@ -100,6 +117,7 @@ export class ProviderRepository implements IProviderRepository {
         },
         include: {
           city: true,
+          city_provider: true,
           service_provider: {
             include: {
               service: true,
@@ -116,6 +134,7 @@ export class ProviderRepository implements IProviderRepository {
         services: provider?.service_provider?.map(sp => sp.service.id),
         servicesNames: provider?.service_provider?.map(sp => sp.service.name),
         cityName: provider?.city?.name,
+        cityIdList: provider?.city_provider?.map(cp => cp.city_id),
         subscription_situation: '',
         reviews: provider?.provider_review?.length,
         rating: provider?.provider_review?.reduce((acc, review) => acc + review?.stars, 0) / provider?.provider_review?.length,
