@@ -1,5 +1,8 @@
 import { Decimal, JsonValue } from "@prisma/client/runtime/library";
 
+export type IPermissions = 'UNLIMITED-REQUESTS' | 'PORTFOLIO-PHOTOS-5' | 'PORTFOLIO-PHOTOS-10' | 
+'MAX-PROFILE-CITY-5' | 'UNLIMITED-PROFILE-CITY' | 'BASIC-DASHBOARD' | 'UNLIMITED-DASHBOARD' | 'PROFILE-PREMIUM';
+
 export interface IPlanDTO {
     id: string,
     gateway_id?: number | null,

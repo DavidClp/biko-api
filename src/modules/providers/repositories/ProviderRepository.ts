@@ -54,7 +54,7 @@ export class ProviderRepository implements IProviderRepository {
     try {
       // Extrair services do data para não incluir no update do provider
       const { services, ...providerData } = data;
-      
+
       const provider = await database.provider.update({
         where: { id },
         data: {
@@ -94,7 +94,7 @@ export class ProviderRepository implements IProviderRepository {
   async findById(id: string): Promise<ProviderResponseDTO | null> {
     try {
       const provider = await database.provider.findUnique({
-        where: { 
+        where: {
           id,
           deletedAt: null,
         },
@@ -123,6 +123,7 @@ export class ProviderRepository implements IProviderRepository {
 
       delete (providerResponse as any)?.service_provider;
       delete (providerResponse as any)?.city;
+      delete (providerResponse as any)?.provider_review;
 
       return providerResponse;
     } catch (error) {
@@ -138,7 +139,7 @@ export class ProviderRepository implements IProviderRepository {
   async findByIdComplete(id: string): Promise<ProviderResponseCompleteDTO | null> {
     try {
       const provider = await database.provider.findUnique({
-        where: { 
+        where: {
           id,
           deletedAt: null,
         },
@@ -188,7 +189,7 @@ export class ProviderRepository implements IProviderRepository {
   async findByUserId(userId: string): Promise<ProviderResponseDTO | null> {
     try {
       const provider = await database.provider.findUnique({
-        where: { 
+        where: {
           userId,
           deletedAt: null,
         },
@@ -294,7 +295,7 @@ export class ProviderRepository implements IProviderRepository {
   async findByStatus(status: 'PENDING' | 'APPROVED' | 'REJECTED'): Promise<ProviderResponseDTO[]> {
     try {
       const providers = await database.provider.findMany({
-        where: { 
+        where: {
           status,
           deletedAt: null,
         },

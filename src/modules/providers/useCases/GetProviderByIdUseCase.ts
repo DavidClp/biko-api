@@ -23,13 +23,11 @@ export class GetProviderByIdUseCase {
 
     try {
       subscription_situation = await validateSubscriptionUseCase({ provider: provider })
-      console.log("subscription_situation",subscription_situation)
     } catch (err) {
       if (err instanceof AppError) subscription_situation = correctSituations[err?.error?.field as unknown as string]
       else throw err
     }
 
-    
     if (!provider) {
       throw new AppError({
         title: 'Provider não encontrado',

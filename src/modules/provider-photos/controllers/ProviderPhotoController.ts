@@ -46,6 +46,7 @@ export class ProviderPhotoController {
       }
 
       const webpBuffer = await sharp(req.file?.buffer)
+        .rotate() // corrige rotação automática
         .resize(1024, 1024, {
           fit: 'inside',
           withoutEnlargement: true
