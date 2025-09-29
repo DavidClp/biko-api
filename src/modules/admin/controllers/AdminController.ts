@@ -257,12 +257,12 @@ export class AdminController {
     } catch (error) {
       console.error('Erro no controller getUserById:', error)
       if (error instanceof AppError) {
-        return res.status(error.statusCode).json({
+        return res.status(error.error.statusCode).json({
           success: false,
           error: {
-            title: error.title,
-            detail: error.detail,
-            statusCode: error.statusCode
+            title: error.error.title,
+            detail: error.error.detail,
+            statusCode: error.error.statusCode
           }
         })
       }
