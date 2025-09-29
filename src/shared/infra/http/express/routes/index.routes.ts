@@ -15,6 +15,7 @@ import { plansRoutes } from '@/modules/plans/infra/http/express/routes';
 import { subscriptionsRouter } from '@/modules/subscriptions/routes/subscriptions.routes';
 import { transactionsRouter } from '@/modules/transactions/routes/transactions.routes';
 import { logRoutes } from '@/modules/logs/routes';
+import { adminRoutes } from '@/modules/admin/routes';
 
 const routes = Router();
 
@@ -45,6 +46,8 @@ routes.use('/subscriptions', subscriptionsRouter);
 routes.use('/transactions', transactionsRouter);
 
 routes.use('/logs', logRoutes);
+
+routes.use('/admin', adminRoutes);
 
 //routes.use(sharedRoutes);
 //routes.use('/properties', propertiesRoutes);
