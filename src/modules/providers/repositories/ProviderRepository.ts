@@ -238,6 +238,11 @@ export class ProviderRepository implements IProviderRepository {
               name: true,
             },
           },
+          city_provider: {
+            include: {
+              city: true,
+            }
+          },
           service_provider: {
             include: {
               service: true,
@@ -246,8 +251,14 @@ export class ProviderRepository implements IProviderRepository {
           provider_review: true,
         },
         where: {
-          cityId,
-          is_listed: true,
+          ...(cityId && {
+            city_provider: {
+              some: {
+                city_id: cityId,
+              },
+            },
+          }),
+     //     is_listed: true,
           deletedAt: null,
           name: { contains: query, mode: 'insensitive' },
           ...(services && services.length > 0 && {
