@@ -35,6 +35,18 @@ export class RequestRepository implements IRequestRepository {
     try {
       const request = await database.request.findUnique({
         where: { id },
+        include: {
+          client: {
+            select: {
+              userId: true,
+            }
+          },
+          provider: {
+            select: {
+              userId: true,
+            }
+          }
+        }
       });
 
       return request as RequestResponseDTO | null;

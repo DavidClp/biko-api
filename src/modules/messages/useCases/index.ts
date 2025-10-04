@@ -4,3 +4,4 @@ export * from './GetMessagesBySenderIdUseCase';
 export * from './GetMessagesByReceiverIdUseCase';
 export * from './UpdateMessageViewedUseCase';
 export * from './DeleteMessageUseCase';
+export * from './CheckUserPermissionForRequestUseCase';

@@ -14,8 +14,6 @@ export class ChatSocketHandler {
     private setupSocketAuth() {
         this.io.use((socket, next) => {
             const userId = socket.handshake.auth?.userId;
-            console.log('Usuário tentando conectar:', userId);
-
             if (!userId) {
                 return next(new Error("Unauthorized"));
             }

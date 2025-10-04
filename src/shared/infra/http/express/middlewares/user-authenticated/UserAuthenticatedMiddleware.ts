@@ -16,12 +16,17 @@ export const userAuthenticatedMiddleware = () => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const authHeader = req.headers.authorization;
+      const tokenFromQuery = req.query.token as string;
 
-      if (!authHeader) {
+      let token: string;
+
+      if (authHeader) {
+        token = authHeader.split(' ')[1];
+      } else if (tokenFromQuery) {
+        token = tokenFromQuery;
+      } else {
         throw new UnauthorizedError();
       }
-
-      const token = authHeader.split(' ')[1];
 
       const decoded = verify(token, process.env.JWT_SECRET as string);
 
@@ -66,7 +71,6 @@ export const userAuthenticatedMiddleware = () => {
 
       return next();
     } catch (err) {
-      console.log(err);
       if (err instanceof UnauthorizedError || err instanceof JsonWebTokenError) {
         return res.status(401).json({
           success: false,

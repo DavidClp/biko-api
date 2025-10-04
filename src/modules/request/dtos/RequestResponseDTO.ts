@@ -12,4 +12,10 @@ export interface RequestResponseDTO {
   status: 'PENDING' | 'ACCEPTED' | 'REJECTED' | 'IN_PROGRESS' | 'COMPLETED';
   createdAt: Date;  
   unreadMessages?: number;
+  client?: {
+    userId: string;
+  };
+  provider?: {
+    userId: string;
+  };
 }
