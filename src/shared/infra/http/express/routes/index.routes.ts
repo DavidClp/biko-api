@@ -3,6 +3,7 @@ import { providerReviewRoutes } from '@/modules/providers/routes/provider-review
 import { providerPhotoRoutes } from '@/modules/provider-photos/routes/provider-photo.routes';
 import { clientRoutes } from '@/modules/clients/routes/client.routes';
 import { authRoutes } from '@/modules/auth/login/routes/auth.routes';
+import { passwordRecoveryRouter } from '@/modules/auth/password-recovery/routes/password-recovery.routes';
 import { cityRoutes } from '@/modules/cities/routes/city.routes';
 import { stateRoutes } from '@/modules/states/routes/state.routes';
 import { requestRoutes } from '@/modules/request/routes/request.routes';
@@ -20,6 +21,8 @@ import { adminRoutes } from '@/modules/admin/routes';
 const routes = Router();
 
 routes.use('/auth', authRoutes);
+
+routes.use('/password-recovery', passwordRecoveryRouter);
 
 routes.use('/providers', providerRoutes);
 
