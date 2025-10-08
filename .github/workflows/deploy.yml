@@ -38,6 +38,7 @@ jobs:
             echo "MODE=PROD" >> .env
             echo "EXECUTE_ROUTINES=true" >> .env
             echo "PORT=${{ secrets.PORT }}" >> .env
+            echo "FRONTEND_URL=${{ secrets.FRONTEND_URL }}" >> .env
 
             echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
             echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env

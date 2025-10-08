@@ -53,9 +53,10 @@ if (process.env.MODE === 'PROD') {
           return next(); // não passa pelo logger
         }
 
-        if (req?.body?.password) {
-            req.body.password = '********';
-        }
+        // Removido: estava mascarando a senha antes do processamento
+        // if (req?.body?.password) {
+        //     req.body.password = '********';
+        // }
       
         return pinoMiddleware(req, res, next);
       });
