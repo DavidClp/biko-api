@@ -32,74 +32,57 @@ export class ProviderPhotoController {
   }
 
   async create(req: Request, res: Response): Promise<Response> {
-    try {
-      const { providerId } = req.params;
-      const { description, order } = req.body;
+    const { providerId } = req.params;
+    const { description, order } = req.body;
 
-      if (!req.file) {
-        throw new AppError({
-          title: 'Arquivo não encontrado',
-          detail: 'É necessário enviar uma foto',
-          origin: 'ProviderPhotoController.create',
-          statusCode: 400,
-        });
-      }
-
-      const webpBuffer = await sharp(req.file?.buffer)
-        .rotate() // corrige rotação automática
-        .resize(1024, 1024, {
-          fit: 'inside',
-          withoutEnlargement: true
-        })
-        .webp({
-          quality: 85, // Qualidade mais baixa para maior compressão
-        })
-        .toBuffer();
-
-      const webpFile: Express.Multer.File = {
-        ...req.file,
-        buffer: webpBuffer,
-        mimetype: 'image/webp',
-        originalname: req.file?.originalname?.replace(/\.[^/.]+$/, '.webp'),
-      };
-
-      // Upload da foto para S3
-      const key = `provider-photos/${providerId}/${Date.now()}-${req.file.originalname}`;
-      const photoUrl = await uploadToS3(webpFile, key);
-
-      const data: CreateProviderPhotoDTO = {
-        provider_id: providerId,
-        photo_url: photoUrl,
-        description,
-        order: order || 0,
-      };
-
-      const photo = await this.createProviderPhotoUseCase.execute(data);
-
-      return res.status(201).json({
-        success: true,
-        data: photo,
-        message: 'Foto adicionada com sucesso',
-      });
-    } catch (error) {
-      if (error instanceof AppError) {
-        return res.status(error.error.statusCode).json({
-          success: false,
-          message: error.error.title,
-          detail: error.error.detail,
-        });
-      }
-
-      return res.status(500).json({
-        success: false,
-        message: 'Erro interno do servidor',
-        detail: 'Ocorreu um erro inesperado',
+    if (!req.file) {
+      throw new AppError({
+        title: 'Arquivo não encontrado',
+        detail: 'É necessário enviar uma foto',
+        origin: 'ProviderPhotoController.create',
+        statusCode: 400,
       });
     }
+
+    const webpBuffer = await sharp(req.file?.buffer)
+      .rotate() // corrige rotação automática
+      .resize(1024, 1024, {
+        fit: 'inside',
+        withoutEnlargement: true
+      })
+      .webp({
+        quality: 85, // Qualidade mais baixa para maior compressão
+      })
+      .toBuffer();
+
+    const webpFile: Express.Multer.File = {
+      ...req.file,
+      buffer: webpBuffer,
+      mimetype: 'image/webp',
+      originalname: req.file?.originalname?.replace(/\.[^/.]+$/, '.webp'),
+    };
+
+    // Upload da foto para S3
+    const key = `provider-photos/${providerId}/${Date.now()}-${req.file.originalname}`;
+    const photoUrl = await uploadToS3(webpFile, key);
+
+    const data: CreateProviderPhotoDTO = {
+      provider_id: providerId,
+      photo_url: photoUrl,
+      description,
+      order: order || 0,
+    };
+
+    const photo = await this.createProviderPhotoUseCase.execute(data);
+
+    return res.status(201).json({
+      success: true,
+      data: photo,
+      message: 'Foto adicionada com sucesso',
+    });
   }
 
   async getById(req: Request, res: Response): Promise<Response> {
-    try {
       const { photoId } = req.params;
       const photo = await this.getProviderPhotoByIdUseCase.execute(photoId);
 
@@ -107,21 +90,6 @@ export class ProviderPhotoController {
         success: true,
         data: photo,
       });
-    } catch (error) {
-      if (error instanceof AppError) {
-        return res.status(error.error.statusCode).json({
-          success: false,
-          message: error.error.title,
-          detail: error.error.detail,
-        });
-      }
-
-      return res.status(500).json({
-        success: false,
-        message: 'Erro interno do servidor',
-        detail: 'Ocorreu um erro inesperado',
-      });
-    }
   }
 
   async list(req: Request, res: Response): Promise<Response> {

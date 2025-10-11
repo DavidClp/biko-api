@@ -36,6 +36,8 @@ export class CreateOrUpdateSubscriptionUseCase {
 
 		const totalValueforSubscription = Number(plan?.value ?? 0);
 
+		const trial_days = 30;
+
 		let newSubscriptionData: any = {
 			gateway_id: null,
 			plan_id,
@@ -43,13 +45,13 @@ export class CreateOrUpdateSubscriptionUseCase {
 			value: totalValueforSubscription,
 			card_mask: '-',
 			card_flag: '-',
-			banking_billet_info: banking_billet
+			banking_billet_info: banking_billet,
 		};
 
 		const planIsFree = Number(totalValueforSubscription) <= 0;
 
 		if (!planIsFree) {
-			const { gateway_id, status } = await createSubscriptionInGerencianet({ plan_id, credit_card, banking_billet, totalValueforSubscription });
+			const { gateway_id, status } = await createSubscriptionInGerencianet({ plan_id, credit_card, banking_billet, totalValueforSubscription, trial_days });
 			
 			newSubscriptionData = {
 				gateway_id,

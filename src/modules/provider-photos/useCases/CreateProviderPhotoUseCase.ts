@@ -33,17 +33,9 @@ export class CreateProviderPhotoUseCase {
     }
 
     // Buscar informações do plano do profissional
-    const subscription = provider.subscription;
-    if (!subscription) {
-      throw new AppError({
-        title: 'Plano não encontrado',
-        detail: 'O profissional não possui um plano ativo',
-        origin: 'CreateProviderPhotoUseCase.execute',
-        statusCode: 400,
-      });
-    }
+    const subscription = provider?.subscription;
 
-    const planName = subscription.plans?.name;
+    const planName = subscription?.plans?.name;
     let maxPhotos = 0;
 
     if (planName?.toUpperCase().includes('PRESTADOR')) {

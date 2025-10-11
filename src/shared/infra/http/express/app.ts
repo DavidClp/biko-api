@@ -69,6 +69,9 @@ RoutineTrigger.execute();
 app.use((err: unknown, req: Request, res: Response, _: NextFunction) => {
     //logger.error('ERRO CAPTURADO:', err);
     logger.error({ err: new Error("ERRO CAPTURADO:") }, err as string);
+
+    console.log('ERRO CAPTURADO:', err);
+
     // Se for um AppError, retornar com o formato correto
     if (err instanceof AppError) {
         return res.status(err.error.statusCode).json({

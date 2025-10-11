@@ -8,11 +8,12 @@ interface ICreateSubscriptionInGerencianet {
     totalValueforSubscription: number
     credit_card?: ICreditCard
     banking_billet?: IBankingBillet
+    trial_days?: number
 }
 
 export const createSubscriptionInGerencianet = async (data: ICreateSubscriptionInGerencianet) => {
     try {
-        const { plan_id, totalValueforSubscription } = data
+        const { plan_id, totalValueforSubscription, trial_days } = data
         const { credit_card, banking_billet } = data
 
         let _credit_card: ICreditCard | undefined = undefined
@@ -41,10 +42,15 @@ export const createSubscriptionInGerencianet = async (data: ICreateSubscriptionI
         const name = plan.name
         const value = Number.parseInt(Number.parseFloat(`${totalValueforSubscription}`).toFixed(2).replace(".", ""))
 
-        const _data = { items: [{ name, value, amount: 1 }], payment: {} }
+        const _data: any = { items: [{ name, value, amount: 1 }], payment: {} }
 
         if (_credit_card) {
-            _data.payment = { credit_card: _credit_card }
+            _data.payment = {
+                credit_card: {
+                    ..._credit_card,
+                    trial_days: trial_days
+                }
+            }
         } else {
             _data.payment = { banking_billet: _banking_billet }
         }
@@ -52,7 +58,6 @@ export const createSubscriptionInGerencianet = async (data: ICreateSubscriptionI
         const result = await gerencianet.oneStepSubscription({ id: gateway_id }, _data)
 
 
-        /// criar rota
         const notification_url = `${process.env.WEBHOOK_URL}gerencianet/webhook?subscription_gateway_id=${result?.data?.subscription_id}`
 
         await gerencianet.updateSubscriptionMetadata({ id: result?.data?.subscription_id }, { notification_url })
