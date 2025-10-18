@@ -6,7 +6,7 @@
         "outDir": "build",
         "strict": false,
         "esModuleInterop": true,
-        "skipLibCheck": true,
+        "skipLibCheck": false,
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
         "declaration": true,

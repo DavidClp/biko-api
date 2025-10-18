@@ -8,7 +8,6 @@ import { RoutineTrigger } from "@/routine";
 import { pinoHttp } from "pino-http";
 import { logger } from "@/shared/utils/logger";
 import { setupWebSocket } from "./websocket";
-import { v4 as uuidv4 } from "uuid";
 
 export const notifications_in_progress: { [key: string]: boolean } = {};
 
@@ -17,50 +16,6 @@ const app = express();
 app.use(cors());
 
 app.use(express.json({ limit: '200mb' }));
-
-// Middleware para gerar requestId
-if (process.env.MODE === 'PROD') {
-    app.use((req, res, next) => {
-        req.id = uuidv4(); // adiciona o requestId à requisição
-        res.setHeader("X-Request-Id", req.id); // opcional: retorna no header
-        next();
-    });
-}
-
-const pinoMiddleware = pinoHttp({
-    logger,
-    customProps: (req) => ({ requestId: req.id }),
-    serializers: {
-        req(req) {
-            return {
-                method: req.method,
-                url: req.url,
-                body: req.raw.body,
-            };
-        },
-        res(res) {
-            return { statusCode: res.statusCode };
-        },
-    },
-});
-
-// Middleware pino-http com requestId
-if (process.env.MODE === 'PROD') {
-    app.use((req, res, next) => {
-       // const ignoredRoutes = ['/logs', '/provider-photos', '/services'];
-      
-        if (req.method === 'GET'/*  && ignoredRoutes.includes(req.path) */) {
-          return next(); // não passa pelo logger
-        }
-
-        // Removido: estava mascarando a senha antes do processamento
-        // if (req?.body?.password) {
-        //     req.body.password = '********';
-        // }
-      
-        return pinoMiddleware(req, res, next);
-      });
-}
 
 app.use(routes);
 
