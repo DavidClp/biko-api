@@ -2,13 +2,6 @@ import pino from "pino";
 import fs from "fs";
 import path from "path";
 
-// garante que a pasta logs exista
-const logDir = path.join(__dirname, "../../../logs");
-if (!fs.existsSync(logDir)) {
-  fs.mkdirSync(logDir, { recursive: true });
-}
-
-const logFilePath = path.join(logDir, "app.log");
 
 // função para formatar timestamp
 function formatTime(ms: number) {
@@ -24,8 +17,6 @@ function formatTime(ms: number) {
   }
   
 
-// cria um stream customizado que formata o JSON
-const stream = fs.createWriteStream(logFilePath, { flags: "a" });
 
 export const logger = pino(
   {
@@ -41,5 +32,4 @@ export const logger = pino(
       },
     },
   },
-  stream
 );
