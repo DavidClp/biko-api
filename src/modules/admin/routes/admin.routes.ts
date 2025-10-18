@@ -27,9 +27,6 @@ const adminMiddleware = async (req: any, res: any, next: any) => {
   next()
 }
 
-// Dashboard
-adminRoutes.get('/dashboard/stats', userAuthenticatedMiddleware(), adminMiddleware, adminController.getDashboardStats.bind(adminController))
-
 // Analytics
 adminRoutes.get('/analytics', userAuthenticatedMiddleware(), adminMiddleware, adminController.getAnalytics.bind(adminController))
 
