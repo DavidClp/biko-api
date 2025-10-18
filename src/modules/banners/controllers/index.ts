@@ -1,0 +1,1 @@
+export { BannerController } from './BannerController';

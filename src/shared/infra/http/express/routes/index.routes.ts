@@ -15,8 +15,9 @@ import { importSubscriptionOfGerencianetService } from '@/modules/subscriptions-
 import { plansRoutes } from '@/modules/plans/infra/http/express/routes';
 import { subscriptionsRouter } from '@/modules/subscriptions/routes/subscriptions.routes';
 import { transactionsRouter } from '@/modules/transactions/routes/transactions.routes';
-import { logRoutes } from '@/modules/logs/routes';
 import { adminRoutes } from '@/modules/admin/routes';
+import { advertiserRoutes } from '@/modules/advertisers/routes/advertiser.routes';
+import { bannerRoutes } from '@/modules/banners/routes/banner.routes';
 
 const routes = Router();
 
@@ -48,9 +49,11 @@ routes.use('/subscriptions', subscriptionsRouter);
 
 routes.use('/transactions', transactionsRouter);
 
-routes.use('/logs', logRoutes);
-
 routes.use('/admin', adminRoutes);
+
+routes.use('/advertisers', advertiserRoutes);
+
+routes.use('/banners', bannerRoutes);
 
 //routes.use(sharedRoutes);
 //routes.use('/properties', propertiesRoutes);

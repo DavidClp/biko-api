@@ -310,3 +310,59 @@ enum MetricType {
   SEARCH_APPEARANCE
   PROFILE_VIEW
 }
+
+
+model Advertiser {
+  id          String   @id @default(uuid())
+  name        String
+  email       String?
+  phone       String?
+  company     String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+
+  banners     Banner[]
+}
+
+model Banner {
+  id           String      @id @default(uuid())
+  advertiserId String
+  title        String
+  description  String?
+  imageUrl     String
+  position     BannerPosition
+  size         BannerSize
+  isActive     Boolean     @default(true)
+  clickCount   Int         @default(0)
+  viewCount    Int         @default(0)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  publicVisibility BannerPublicVisibility @default(ALL)
+
+  advertiser   Advertiser @relation(fields: [advertiserId], references: [id], onDelete: Cascade)
+}
+
+enum BannerPosition {
+  PROVIDERS_LIST_TOP
+  PROVIDERS_LIST_MIDDLE
+  PROVIDERS_LIST_BOTTOM
+  PROVIDER_DETAIL_TOP
+  PROVIDER_DETAIL_SIDEBAR
+  DASHBOARD_TOP
+  DASHBOARD_SIDEBAR
+}
+
+enum BannerSize {
+  MOBILE_FULL_WIDTH
+  MOBILE_HALF_WIDTH
+  MOBILE_SQUARE
+  MOBILE_RECTANGLE
+}
+
+enum BannerPublicVisibility {
+  ALL
+  PROVIDER
+  CLIENT
+}
