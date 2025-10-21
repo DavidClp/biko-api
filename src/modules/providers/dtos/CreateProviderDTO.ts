@@ -10,4 +10,5 @@ export interface CreateProviderDTO extends ICreateUser {
   phone?: string;
   socialLinks?: Record<string, any>;
   photoUrl?: string;
+  recommendationCode?: string;
 }

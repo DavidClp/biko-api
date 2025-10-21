@@ -18,6 +18,8 @@ import { transactionsRouter } from '@/modules/transactions/routes/transactions.r
 import { adminRoutes } from '@/modules/admin/routes';
 import { advertiserRoutes } from '@/modules/advertisers/routes/advertiser.routes';
 import { bannerRoutes } from '@/modules/banners/routes/banner.routes';
+import { recommendationRoutes } from '@/modules/recommendations/routes/recommendation.routes';
+import { database } from '@/shared/infra/database';
 
 const routes = Router();
 
@@ -54,6 +56,39 @@ routes.use('/admin', adminRoutes);
 routes.use('/advertisers', advertiserRoutes);
 
 routes.use('/banners', bannerRoutes);
+
+routes.use('/recommendations', recommendationRoutes);
+
+// Rota para buscar usuário por ID
+routes.get('/users/:id', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const user = await database.user.findUnique({
+      where: { id },
+      include: {
+        client: true,
+        provider: true,
+      },
+    });
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'Usuário não encontrado'
+      });
+    }
+
+    return res.json({
+      success: true,
+      data: user
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Erro interno do servidor'
+    });
+  }
+});
 
 //routes.use(sharedRoutes);
 //routes.use('/properties', propertiesRoutes);

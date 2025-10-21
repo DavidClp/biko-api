@@ -15,6 +15,9 @@ model User {
   email     String    @unique
   password  String
   role      Role
+  recommendation_code String? @unique
+  cpf                 String? @unique
+  pix_key             String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
@@ -25,6 +28,10 @@ model User {
   sentMessages      Message[]          @relation("SentMessages")
   receivedMessages  Message[]          @relation("ReceivedMessages")
   passwordRecovery  PasswordRecovery[]
+  
+  // Relacionamentos para recomendações
+  recommendationsGiven    Recommendation[] @relation("RecommendationGiver")
+  recommendationsReceived Recommendation[] @relation("RecommendationReceiver")
 }
 
 model Client {
@@ -366,4 +373,19 @@ enum BannerPublicVisibility {
   PROVIDER
   CLIENT
   ADMIN
+}
+
+model Recommendation {
+  id          String   @id @default(uuid())
+  giverId     String   // Usuário que fez a recomendação
+  receiverId  String   // Usuário que foi recomendado (sempre um prestador)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  giver    User @relation("RecommendationGiver", fields: [giverId], references: [id], onDelete: Cascade)
+  receiver User @relation("RecommendationReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@unique([giverId, receiverId])
+  @@index([giverId])
+  @@index([receiverId])
 }

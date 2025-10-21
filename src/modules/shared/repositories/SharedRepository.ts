@@ -123,6 +123,29 @@ export class SharedRepository implements ISharedRepository {
     }
   }
 
+  async findUserById({ id }: { id: string }): Promise<IUser> {
+    try {
+      const user = await database.user.findUnique({
+        where: { id },
+        include: {
+          client: true,
+          provider: true,
+        },
+      });
+
+      return user as IUser;
+    } catch (error) {
+      console.error('❌ - Erro ao buscar usuário por ID:', error);
+      
+      throw new AppError({
+        title: 'Erro ao buscar usuário',
+        detail: 'Ocorreu um erro inesperado ao buscar o usuário',
+        origin: 'SharedRepository.findUserById',
+        statusCode: 500,
+      });
+    }
+  }
+
   async listServices({ name }: { name?: string }): Promise<IServiceResponseDTO[]> {
     try {
       const services = await database.service.findMany({

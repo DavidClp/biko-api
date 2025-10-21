@@ -6,11 +6,13 @@ import { hash } from 'bcryptjs';
 import { IRegisterResponse } from '@/modules/shared/dtos/IRegisterResponse';
 import { Role } from '@prisma/client';
 import { sign } from 'jsonwebtoken';
+import { RecommendationRepository } from '@/modules/recommendations/repositories';
 
 export class CreateProviderUseCase {
   constructor(
     private providerRepository: IProviderRepository,
-    private sharedRepository: ISharedRepository
+    private sharedRepository: ISharedRepository,
+    private recommendationRepository: RecommendationRepository
   ) { }
 
   async execute(data: CreateProviderDTO): Promise<IRegisterResponse> {
@@ -28,6 +30,19 @@ export class CreateProviderUseCase {
       ...data,
       userId: user.id
     });
+
+    // Processar código de recomendação se fornecido
+    if (data.recommendationCode) {
+      try {
+        const recommendedUser = await this.recommendationRepository.findRecommendationByCode(data.recommendationCode);
+        if (recommendedUser) {
+          await this.recommendationRepository.createRecommendation(recommendedUser.id, user.id);
+        }
+      } catch (error) {
+        // Log do erro mas não falha o cadastro
+        console.error('Erro ao processar código de recomendação:', error);
+      }
+    }
 
     const token = sign(
       {

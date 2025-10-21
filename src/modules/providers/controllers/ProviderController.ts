@@ -13,6 +13,7 @@ import { SharedRepository } from '@/modules/shared/repositories/SharedRepository
 import { UpdateImgProfileUseCase } from '../useCases/UpdateImgProfileUseCase';
 import { CreateProviderMetricUseCase } from '../../provider-metrics/useCases/CreateProviderMetricUseCase';
 import { ProviderMetricsRepository } from '../../provider-metrics/repositories/ProviderMetricsRepository';
+import { RecommendationRepository } from '@/modules/recommendations/repositories';
 
 export class ProviderController {
   private createProviderUseCase: CreateProviderUseCase;
@@ -27,8 +28,9 @@ export class ProviderController {
     const providerRepository = new ProviderRepository();
     const sharedRepository = new SharedRepository();
     const providerMetricsRepository = new ProviderMetricsRepository();
+    const recommendationRepository = new RecommendationRepository();
 
-    this.createProviderUseCase = new CreateProviderUseCase(providerRepository, sharedRepository);
+    this.createProviderUseCase = new CreateProviderUseCase(providerRepository, sharedRepository, recommendationRepository);
     this.getProviderByIdUseCase = new GetProviderByIdUseCase(providerRepository);
     this.listProvidersUseCase = new ListProvidersUseCase(providerRepository);
     this.updateProviderUseCase = new UpdateProviderUseCase(providerRepository);

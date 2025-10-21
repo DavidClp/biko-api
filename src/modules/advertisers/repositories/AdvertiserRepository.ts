@@ -36,6 +36,9 @@ export class AdvertiserRepository {
       orderBy: {
         createdAt: 'desc',
       },
+      where: {
+        deletedAt: null
+      }
     });
   }
 

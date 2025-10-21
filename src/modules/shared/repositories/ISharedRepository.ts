@@ -6,5 +6,6 @@ export interface ISharedRepository {
   updateProviderOfUSer({providerId, userId}: {providerId: string, userId: string}): Promise<void>;
   updateClientOfUSer({clientId, userId}: {clientId: string, userId: string}): Promise<void>;
   findUserByEmail({ email }: { email: string }): Promise<IUser>;
+  findUserById({ id }: { id: string }): Promise<IUser>;
   listServices({ name }: { name?: string }): Promise<IServiceResponseDTO[]>;
 }
