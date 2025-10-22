@@ -228,7 +228,7 @@ export class ProviderRepository implements IProviderRepository {
     }
   }
 
-  async findAll({ cityId, query, services }: IGetListProvidersDTO): Promise<ProviderResponseDTO[]> {
+  async   findAll({ cityId, query, services }: IGetListProvidersDTO): Promise<ProviderResponseDTO[]> {
     try {
       const providers = await database.provider.findMany({
         orderBy: { createdAt: 'desc' },
@@ -258,7 +258,7 @@ export class ProviderRepository implements IProviderRepository {
               },
             },
           }),
-     //     is_listed: true,
+          is_listed: true,
           deletedAt: null,
           name: { contains: query, mode: 'insensitive' },
           ...(services && services.length > 0 && {
