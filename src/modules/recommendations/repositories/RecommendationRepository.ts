@@ -118,4 +118,82 @@ export class RecommendationRepository {
       },
     });
   }
+
+  async getAllRecommendations(page: number = 1, limit: number = 20, startDate?: Date, endDate?: Date): Promise<{
+    recommendations: Recommendation[];
+    total: number;
+    totalPages: number;
+  }> {
+    const skip = (page - 1) * limit;
+    
+    const whereClause: any = {};
+    
+    if (startDate || endDate) {
+      whereClause.createdAt = {};
+      if (startDate) {
+        whereClause.createdAt.gte = startDate;
+      }
+      if (endDate) {
+        whereClause.createdAt.lte = endDate;
+      }
+    }
+
+    const [recommendations, total] = await Promise.all([
+      prisma.recommendation.findMany({
+        where: whereClause,
+        include: {
+          giver: {
+            select: {
+              id: true,
+              email: true,
+              role: true,
+              recommendation_code: true,
+              cpf: true,
+              pix_key: true,
+            },
+          },
+          receiver: {
+            select: {
+              id: true,
+              email: true,
+              role: true,
+              recommendation_code: true,
+              provider: {
+                select: {
+                  id: true,
+                  name: true,
+                  business_name: true,
+                  status: true,
+                  city: {
+                    select: {
+                      name: true,
+                      state: {
+                        select: {
+                          initials: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+        skip,
+        take: limit,
+      }),
+      prisma.recommendation.count({
+        where: whereClause,
+      }),
+    ]);
+
+    return {
+      recommendations,
+      total,
+      totalPages: Math.ceil(total / limit),
+    };
+  }
 }

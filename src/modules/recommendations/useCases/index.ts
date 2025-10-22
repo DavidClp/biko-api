@@ -2,3 +2,4 @@ export { GenerateRecommendationCodeUseCase } from './GenerateRecommendationCodeU
 export { CreateRecommendationUseCase } from './CreateRecommendationUseCase';
 export { GetUserRecommendationsUseCase } from './GetUserRecommendationsUseCase';
 export { GetUserByRecommendationCodeUseCase } from './GetUserByRecommendationCodeUseCase';
+export { GetAllRecommendationsUseCase } from './GetAllRecommendationsUseCase';

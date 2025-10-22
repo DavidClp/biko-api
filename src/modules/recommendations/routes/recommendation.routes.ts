@@ -17,4 +17,7 @@ recommendationRoutes.get('/my-recommendations', userAuthenticatedMiddleware(), r
 // Buscar usuário por código de recomendação (público - para tela de cadastro)
 recommendationRoutes.get('/user/:code', recommendationController.getUserByCode.bind(recommendationController));
 
+// Buscar todas as recomendações (admin) - requer autenticação
+recommendationRoutes.get('/admin/all', userAuthenticatedMiddleware(), recommendationController.getAllRecommendations.bind(recommendationController));
+
 export { recommendationRoutes };
