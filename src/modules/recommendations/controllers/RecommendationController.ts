@@ -164,8 +164,6 @@ export class RecommendationController {
           recommendation_code: user.recommendation_code,
           cpf: user.cpf,
           pix_key: user.pix_key,
-          client: user.client,
-          provider: user.provider,
         },
       });
     } catch (error) {
