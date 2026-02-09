@@ -23,16 +23,16 @@ jobs:
           ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
             set -e
 
-            if [ ! -d "/root/biko-api/.git" ]; then
-              rm -rf /root/biko-api
-              git clone https://github.com/${{ github.repository }} /root/biko-api
+            if [ ! -d "/deploy/biko-api/.git" ]; then
+              rm -rf /deploy/biko-api
+              git clone https://github.com/${{ github.repository }} /deploy/biko-api
             else
-              cd /root/biko-api
+              cd /deploy/biko-api
               git fetch origin main
               git reset --hard origin/main
             fi
 
-            cd /root/biko-api
+            cd /deploy/biko-api
 
             echo "NODE_ENV=production" > .env
             echo "MODE=PROD" >> .env
